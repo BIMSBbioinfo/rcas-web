@@ -17,7 +17,7 @@ build:
 requirements:
   build:
     - r
-    - bioconductor-biostrings >= 2.26
+    - bioconductor-biostrings >=2.26
     - bioconductor-iranges
     - bioconductor-seqlogo
     - bioconductor-bsgenome
@@ -25,7 +25,7 @@ requirements:
     - bioconductor-bsgenome.hsapiens.ucsc.hg19
   run:
     - r
-    - bioconductor-biostrings >= 2.26
+    - bioconductor-biostrings >=2.26
     - bioconductor-iranges
     - bioconductor-seqlogo
     - bioconductor-bsgenome
