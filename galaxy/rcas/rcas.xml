@@ -1,94 +1,108 @@
 <tool id="rcas" name="RNA Centric Annotation System" version="0.1.0">
     <requirements>
-            <requirement type="package" version="4.11">meme-suite</requirement>
-            <requirement type="package" version="0.1">rcas</requirement>
+            <requirement type="package">r</requirement>
+            <requirement type="package">bioconductorbiomart</requirement>
+            <requirement type="package">bioconductororg.hs.eg.db</requirement>
+            <requirement type="package">bioconductororg.mm.eg.db</requirement>
+            <requirement type="package">bioconductororg.ce.eg.db</requirement>
+            <requirement type="package">bioconductororg.dm.eg.db</requirement>
+            <requirement type="package">bioconductortopgo</requirement>
+            <requirement type="package">bioconductorgenomicfeatures</requirement>
+            <requirement type="package">bioconductorgenomation</requirement>
+            <requirement type="package">bioconductorrtracklayer</requirement>
+            <requirement type="package">bioconductorannotationdbi</requirement>
+            <requirement type="package">bioconductorgenomicranges</requirement>
+            <requirement type="package">bioconductorbsgenome.hsapiens.ucsc.hg19</requirement>
+            <requirement type="package">bioconductorbsgenome.mmusculus.ucsc.mm9</requirement>
+            <requirement type="package">bioconductorbsgenome.celegans.ucsc.ce6</requirement>
+            <requirement type="package">bioconductorbsgenome.dmelanogaster.ucsc.dm3</requirement>
+            <requirement type="package">bioconductorgenomeinfodb</requirement>
+            <requirement type="package">bioconductorbiostrings</requirement>
+            <requirement type="package">bioconductormotifrg</requirement>
+            <requirement type="package">rrmarkdown</requirement>
+            <requirement type="package">rplotly</requirement>
+            <requirement type="package">rdt</requirement>
+            <requirement type="package">rdata.table</requirement>
+            <requirement type="package" version="1.16.0.2">pandoc</requirement>
     </requirements>
     <stdio>
         <exit_code range="1:" />
     </stdio>
 
     <command><![CDATA[
-            RCAS
+            R  e   'library(RCAS);
 
-            #if $source.source_select=="local_path"
-                    --genome $source1.local_genome
-            #else
-                    --$genome $source1.uploaded_genome
-            #end if
+                    runReport(queryFilePath = "$input_BED",
 
-            #if $source.source_select=="local_path"
-                    --gff3 $source.local_gff3
-            #else
-                    --gff3 $source.uploaded_gff3
-            #end if
+                    #if $source.source_select=="local_path"
+                        gffFilePath = "$source.local_gff3",
+                    #else
+                        gffFilePath = "$source.uploaded_gff3",
+                    #end if
 
-            --species $species
-            --cores "\${GALAXY_SLOTS:-12}"
-            $run_motif
-            $run_PATHrich
-            $run_GOrich
-            $run_coverage
-            $run_all
-            $BED
+                    msigdbFilePath = "$human_msigdb_gmt",
+
+                    annotationSummary = $run_anot,
+
+                    goAnalysis = $run_GOrich,
+
+                    msigdbAnalysis = $run_PATHrich,
+
+                    motifAnalysis = "$run_motif",
+
+                    genomeVersion = "$genomeVersion",
+
+                    species = "$species")'
     ]]></command>
     <inputs>
-        <conditional name="source1">
-           <param name="source_select" type="select" label="The source of genome">
-                   <option value="local_path">Local File Path to genome</option>
-                   <option value="input_file">Upload genome</option>
-           </param>
-           <when value="local_path">
-                   <param name="local_genome" type="text" label="genome from Local Path" value="/home/ydilimu/database/hg19.fa"/>
-           </when>
-           <when value="input_file">
-                   <param name="uploaded_genome" type="data" format="fasta" label="GFF3 from Galaxy History" />
-           </when>
-        </conditional>
+        <param name="BED" type="data" format="BED" label="Peak intervals in BED format"
+        help="Reference genome used to generate BED file should conform with the reference genome for running RCAS."/>
 
         <conditional name="source">
            <param name="source_select" type="select" label="The source of GFF3">
-                   <option value="local_path">Local File Path to gff3</option>
-                   <option value="input_file">Upload gff3</option>
+                   <option value="local_path">Local File Path to GFF3</option>
+                   <option value="input_file">Upload GFF3</option>
            </param>
            <when value="local_path">
-                   <param name="local_gff3" type="text" label="GFF3 from Local Path" value="/home/ydilimu/database/gencode.v19.annotation.gff3"/>
+                   <param name="local_gff3" type="text" label="GFF3 from Local Path" value="Path/to/GFF3"/>
            </when>
            <when value="input_file">
                    <param name="uploaded_gff3" type="data" format="GFF3" label="GFF3 from Galaxy History" />
            </when>
         </conditional>
 
-        <param name="BED" type="data" format="BED" label="Peak intervals in BED format"
-        help="Reference genome used to generate BED file should conform with the reference genome for running RCAS."/>
+        <param name="human_msigdb_gmt" type="text" label="msigdb gmt from Local Path" value="Path/to/GMT"/>
 
         <param name="species" type="select" label="Species">
-            <option value="human" selected="true">humna</option>
+            <option value="human" selected="true">human</option>
             <option value="fly">fly</option>
             <option value="fly">worm</option>
             <option value="fly">mouse</option>
         </param>
 
-        <param name="run_motif" label="Run motif search"
-        type="boolean" falsevalue="" truevalue="--run_motif" checked="false"
-        help="Use this option if you want to run motif search."/>
+        <param name="genomeVersion" type="select" label="Genome Version">
+            <option value="hg19" selected="true">hg19</option>
+            <option value="dm3">dm3</option>
+            <option value="ce6">ce6</option>
+            <option value="mm9">mm9</option>
+        </param>
 
-        <param name="run_PATHrich" label="Run pathway enrichment"
-        type="boolean" falsevalue="" truevalue="--run_PATHrich" checked="false"
-        help="Use this option if you want to run pathway enrichment."/>
+        <param name="run_anot" label="Run annotation."
+        type="boolean" falsevalue="FALSE" truevalue="TRUE" checked="FALSE"
+        help="Use this option if you want to run annotation."/>
 
         <param name="run_GOrich" label="Run GO term enrichment"
-        type="boolean" falsevalue="" truevalue="--run_GOrich" checked="false"
+        type="boolean" falsevalue="FALSE" truevalue="TRUE" checked="FALSE"
         help="Use this option if you want to run GO term enrichment."/>
 
-        <param name="run_coverage" label="Run coverage profile"
-        type="boolean" falsevalue="" truevalue="--run_coverage" checked="false"
-        help="Use this option if you want to run coverage profile."/>
+        <param name="run_PATHrich" label="Run pathway enrichment"
+        type="boolean" falsevalue="FALSE" truevalue="TRUE" checked="FALSE"
+        help="Use this option if you want to run pathway enrichment. If so,
+        please provide path to msigdb."/>
 
-        <param name="run_all" label="Run run all steps."
-        type="boolean" falsevalue="" truevalue="--run_all" checked="false"
-        help="Use this option if you want to run all steps."/>
-
-
+        <param name="run_motif" label="Run motif search"
+        type="boolean" falsevalue="FALSE" truevalue="TRUE" checked="FALSE"
+        help="Use this option if you want to run motif search."/>
     </inputs>
     <outputs>
         <data name="report" format="HTML">
@@ -104,8 +118,7 @@
 
 **Run time**:
 
-
-**Environment**: Linux
+**Environment**: Linux/Mac
 
 **IMPORTANT:**
 
