@@ -30,7 +30,7 @@
     </stdio>
 
     <command><![CDATA[
-            R  e   'library(RCAS);
+            R  -e   'library(RCAS);
 
                     runReport(queryFilePath = "$input_BED",
 
