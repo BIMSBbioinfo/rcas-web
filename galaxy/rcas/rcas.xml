@@ -35,6 +35,8 @@
 
                     library(GenomicRanges);
 
+                    library(topGO);
+
                     runReport(queryFilePath = "$input_BED",
 
                     gffFilePath = "$input_GTF",
@@ -96,6 +98,15 @@
     </outputs>
     <tests>
         <test>
+            <param name="input_BED" value="testdata"/>
+            <param name="input_GTF" value="testdata"/>
+            <param name="human_msigdb_gmt" value="testdata"/>
+            <param name="run_anot" value="TRUE"/>
+            <param name="run_GOrich" value="TRUE"/>
+            <param name="run_PATHrich" value="TRUE"/>
+            <param name="run_motif" value="TRUE"/>
+            <param name="genomeVersion" value="hg19"/>
+            <output name="report" file="RCAS.report.html"/>
         </test>
     </tests>
     <help><![CDATA[
