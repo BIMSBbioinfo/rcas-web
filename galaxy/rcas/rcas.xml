@@ -1,28 +1,27 @@
 <tool id="rcas" name="RNA Centric Annotation System" version="0.1.0">
     <requirements>
             <requirement type="package">r</requirement>
-            <requirement type="package">bioconductorbiomart</requirement>
-            <requirement type="package">bioconductororg.hs.eg.db</requirement>
-            <requirement type="package">bioconductororg.mm.eg.db</requirement>
-            <requirement type="package">bioconductororg.ce.eg.db</requirement>
-            <requirement type="package">bioconductororg.dm.eg.db</requirement>
-            <requirement type="package">bioconductortopgo</requirement>
-            <requirement type="package">bioconductorgenomicfeatures</requirement>
-            <requirement type="package">bioconductorgenomation</requirement>
-            <requirement type="package">bioconductorrtracklayer</requirement>
-            <requirement type="package">bioconductorannotationdbi</requirement>
-            <requirement type="package">bioconductorgenomicranges</requirement>
-            <requirement type="package">bioconductorbsgenome.hsapiens.ucsc.hg19</requirement>
-            <requirement type="package">bioconductorbsgenome.mmusculus.ucsc.mm9</requirement>
-            <requirement type="package">bioconductorbsgenome.celegans.ucsc.ce6</requirement>
-            <requirement type="package">bioconductorbsgenome.dmelanogaster.ucsc.dm3</requirement>
-            <requirement type="package">bioconductorgenomeinfodb</requirement>
-            <requirement type="package">bioconductorbiostrings</requirement>
-            <requirement type="package">bioconductormotifrg</requirement>
-            <requirement type="package">rrmarkdown</requirement>
-            <requirement type="package">rplotly</requirement>
-            <requirement type="package">rdt</requirement>
-            <requirement type="package">rdata.table</requirement>
+            <requirement type="package">bioconductor-biomart</requirement>
+            <requirement type="package">bioconductor-org.hs.eg.db</requirement>
+            <requirement type="package">bioconductor-org.mm.eg.db</requirement>
+            <requirement type="package">bioconductor-org.ce.eg.db</requirement>
+            <requirement type="package">bioconductor-org.dm.eg.db</requirement>
+            <requirement type="package">bioconductor-topgo</requirement>
+            <requirement type="package">bioconductor-genomicfeatures</requirement>
+            <requirement type="package">bioconductor-genomation</requirement>
+            <requirement type="package">bioconductor-rtracklayer</requirement>
+            <requirement type="package">bioconductor-annotationdbi</requirement>
+            <requirement type="package">bioconductor-genomicranges</requirement>
+            <requirement type="package">bioconductor-bsgenome.hsapiens.ucsc.hg19</requirement>
+            <requirement type="package">bioconductor-bsgenome.mmusculus.ucsc.mm9</requirement>
+            <requirement type="package">bioconductor-genomeinfodb</requirement>
+            <requirement type="package">bioconductor-biostrings</requirement>
+            <requirement type="package">bioconductor-motifrg</requirement>
+            <requirement type="package">bioconductor-rcas</requirement>
+            <requirement type="package">r-rmarkdown</requirement>
+            <requirement type="package">r-plotly</requirement>
+            <requirement type="package">r-dt</requirement>
+            <requirement type="package">r-data.table</requirement>
             <requirement type="package" version="1.16.0.2">pandoc</requirement>
     </requirements>
     <stdio>
@@ -32,13 +31,13 @@
     <command><![CDATA[
             R  -e   'library(RCAS);
 
+                    library(data.table);
+
+                    library(GenomicRanges);
+
                     runReport(queryFilePath = "$input_BED",
 
-                    #if $source.source_select=="local_path"
-                        gffFilePath = "$source.local_gff3",
-                    #else
-                        gffFilePath = "$source.uploaded_gff3",
-                    #end if
+                    gffFilePath = "$input_GTF",
 
                     msigdbFilePath = "$human_msigdb_gmt",
 
@@ -50,42 +49,30 @@
 
                     motifAnalysis = "$run_motif",
 
-                    genomeVersion = "$genomeVersion",
+                    genomeVersion = "$genomeVersion")'
 
-                    species = "$species")'
+            &&
+
+                mv *RCAS.report.html RCAS.report.html
     ]]></command>
     <inputs>
-        <param name="BED" type="data" format="BED" label="Peak intervals in BED format"
-        help="Reference genome used to generate BED file should conform with the reference genome for running RCAS."/>
-
-        <conditional name="source">
-           <param name="source_select" type="select" label="The source of GFF3">
-                   <option value="local_path">Local File Path to GFF3</option>
-                   <option value="input_file">Upload GFF3</option>
-           </param>
-           <when value="local_path">
-                   <param name="local_gff3" type="text" label="GFF3 from Local Path" value="Path/to/GFF3"/>
-           </when>
-           <when value="input_file">
-                   <param name="uploaded_gff3" type="data" format="GFF3" label="GFF3 from Galaxy History" />
-           </when>
-        </conditional>
-
-        <param name="human_msigdb_gmt" type="text" label="msigdb gmt from Local Path" value="Path/to/GMT"/>
-
-        <param name="species" type="select" label="Species">
-            <option value="human" selected="true">human</option>
-            <option value="fly">fly</option>
-            <option value="fly">worm</option>
-            <option value="fly">mouse</option>
-        </param>
-
         <param name="genomeVersion" type="select" label="Genome Version">
             <option value="hg19" selected="true">hg19</option>
             <option value="dm3">dm3</option>
-            <option value="ce6">ce6</option>
+            <option value="ce10">ce10</option>
             <option value="mm9">mm9</option>
         </param>
+
+        <param name="input_BED" type="data" format="BED" label="Target regions in BED format"
+        help="The coordinates should be in accord with Genome Version."/>
+
+        <param name="input_GTF" type="data" format="GTF" label="Reference annotation in GTF format"/>
+
+        <param name="human_msigdb_gmt" type="data" format="tabular"
+        label="Human Molecular Signatures Database (MSigDB)"
+        optional="true"
+        help="The database is usesd for pathway enrichment.
+        For non-human species, the human MSigDB will be automatically converted accordingly."/>
 
         <param name="run_anot" label="Run annotation."
         type="boolean" falsevalue="FALSE" truevalue="TRUE" checked="FALSE"
@@ -105,25 +92,42 @@
         help="Use this option if you want to run motif search."/>
     </inputs>
     <outputs>
-        <data name="report" format="HTML">
-		        <discover_datasets pattern="__designation__" ext="html" visible="true" />
-        </data>
+        <data name="report" format="HTML" from_work_dir="RCAS.report.html"/>
     </outputs>
     <tests>
         <test>
         </test>
     </tests>
     <help><![CDATA[
-**What it does**:
+RNA Centric Annotation System (RCAS) automatically generates
+dynamic annotations for custom input files
+that contain transcriptomic target regions.
 
-**Run time**:
+The required inputs include a target region file in BED format
+(http://www.ensembl.org/info/website/upload/bed.html),
+and a reference annotation file in GTF format
+(http://www.ensembl.org/info/website/upload/gff.html).
+The optional input is a Human Molecular Signatures Database (MSigDB)
+if a user wishes to run pathway enrichment.
 
-**Environment**: Linux/Mac
+RCAS automatically summarizes annotated features in the GTF file
+that overlap with targets in the BED file,
+and perform enrichment analysis of
+motifs, Gene Ontology (GO) terms and gene set.
 
-**IMPORTANT:**
+The summary of annotated features
+consists of intuitive reports in terms of
+distributions of gene types, genomic features, gene names
+and coverage profiles.
+Motif discovery is also one key component of RCAS automatic system.
+RCAS can provide users list of motifs
+that are enriched comparing with background sequences.
+In addition,
+RCAS generates lists of enriched gene sets and functions
+to shed light on the functional aspects of target regions.
+The final report of RCAS consists of high-quality dynamic figures and tables,
+which are readily applicable for publications or other academic usage.
 
-**Outputs:**
-
-
+The final report is provided as a HTML file.
 ]]></help>
 </tool>
