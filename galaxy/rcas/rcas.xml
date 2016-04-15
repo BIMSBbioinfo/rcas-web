@@ -49,7 +49,7 @@
 
                     msigdbAnalysis = $run_PATHrich,
 
-                    motifAnalysis = "$run_motif",
+                    motifAnalysis = $run_motif,
 
                     genomeVersion = "$genomeVersion")'
 
@@ -98,13 +98,12 @@
     </outputs>
     <tests>
         <test>
-            <param name="input_BED" value="testdata"/>
-            <param name="input_GTF" value="testdata"/>
-            <param name="human_msigdb_gmt" value="testdata"/>
+            <param name="input_BED" value="TIA1.bed"/>
+            <param name="input_GTF" value="Homo_sapiens.GRCh37-chr1-f10k.75.gtf"/>
             <param name="run_anot" value="TRUE"/>
-            <param name="run_GOrich" value="TRUE"/>
-            <param name="run_PATHrich" value="TRUE"/>
-            <param name="run_motif" value="TRUE"/>
+            <param name="run_GOrich" value="FALSE"/>
+            <param name="run_PATHrich" value="FALSE"/>
+            <param name="run_motif" value="FALSE"/>
             <param name="genomeVersion" value="hg19"/>
             <output name="report" file="RCAS.report.html"/>
         </test>
@@ -139,6 +138,8 @@ to shed light on the functional aspects of target regions.
 The final report of RCAS consists of high-quality dynamic figures and tables,
 which are readily applicable for publications or other academic usage.
 
-The final report is provided as a HTML file.
+The final report is provided as a HTML file which can be saved
+and viewd via a web browser.
+
 ]]></help>
 </tool>
