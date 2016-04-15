@@ -110,27 +110,46 @@
         </test>
     </tests>
     <help><![CDATA[
+
+.. class:: infomark
+
+**Purpose**
+
 RNA Centric Annotation System (RCAS) automatically generates
 dynamic annotations for custom input files
 that contain transcriptomic target regions.
-
-The required inputs include a target region file in BED format
-(http://www.ensembl.org/info/website/upload/bed.html),
-and a reference annotation file in GTF format
-(http://www.ensembl.org/info/website/upload/gff.html).
-The optional input is a Human Molecular Signatures Database (MSigDB)
-if a user wishes to run pathway enrichment.
-
-RCAS automatically summarizes annotated features in the GTF file
+RCAS automatically summarizes annotated features
 that overlap with targets in the BED file,
 and perform enrichment analysis of
 motifs, Gene Ontology (GO) terms and gene set.
+
+-----
+
+.. class:: infomark
+
+**Inputs**
+
+1. A target region file in BED format
+2. A reference annotation file in GTF format
+3. A Human Molecular Signatures Database (MSigDB) (optional)
+
+-----
+
+.. class:: infomark
+
+**Outputs**
+
+The main outputs of RCAS are:
+
+1. Annotation Summary for Query Regions
+2. motifRG analysis results
+3. GO Term Analysis Results
+4. Gene Set Enrichment Analysis Results
 
 The summary of annotated features
 consists of intuitive reports in terms of
 distributions of gene types, genomic features, gene names
 and coverage profiles.
-Motif discovery is also one key component of RCAS automatic system.
 RCAS can provide users list of motifs
 that are enriched comparing with background sequences.
 In addition,
@@ -139,8 +158,20 @@ to shed light on the functional aspects of target regions.
 The final report of RCAS consists of high-quality dynamic figures and tables,
 which are readily applicable for publications or other academic usage.
 
-The final report is provided as a HTML file which can be saved
-and viewd via a web browser.
+**The final report is provided as a HTML file which can be saved
+and viewd via a web browser.**
+
 
 ]]></help>
+    <citations>
+        <citation type="bibtex">
+        @ARTICLE{RCAS,
+            author = {},
+            keywords = {bioinformatics, transcriptome, peak, annotation},
+            priority = {},
+            title = {{RNA Centric Annotation System (RCAS)}},
+            url = {https://github.com/BIMSBbioinfo/RCAS}
+        }
+        </citation>
+    </citations>
 </tool>
