@@ -1,24 +1,30 @@
 package:
   name: pandoc
-  version: 1.16.0.2
+  version: 1.17.0.2
 
 source:
-  fn: 1.16.0.2.tar.gz
-  url: https://github.com/jgm/pandoc/archive/1.16.0.2.tar.gz
-  md5: ede21f7fc469fb8a742e640d464607aa
+  fn: 1.17.0.2.tar.gz  [linux]
+  url: https://github.com/jgm/pandoc/archive/1.17.0.2.tar.gz  # [linux]
+  md5sum: d288c4b028cf9b0b29400c384f4d4baf
 
 test:
   commands:
     - pandoc --help
 
-requirements:
-  build:
-  run:
+requirements:           # [linux]
+  build:                # [linux]
+    - gmp 4.*           # [linux]
+    - libffi            # [linux]
+    - zlib              # [linux]
+  run:                  # [linux]
+    - gmp 4.*           # [linux]
+    - libffi            # [linux]
+    - zlib              # [linux]
 
-build:
-  number: 1
+build:  # [linux]
+  number: 1 # [linux]
 
 about:
-  home: http://pandoc.org/
+  home: http://johnmacfarlane.net/pandoc/
   license: GPL
   summary: Universal markup converter
