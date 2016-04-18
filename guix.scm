@@ -16,6 +16,7 @@
              (guix git-download)
              (guix utils)
              (guix build-system gnu)
+             (guix build-system r)
              (gnu packages)
              (gnu packages autotools)
              (gnu packages bioinformatics)
@@ -49,6 +50,63 @@
                (lambda _
                  (with-directory-excursion "test"
                    (zero? (system* "bash" "test.sh"))))))))))))
+
+(define-public r-rcas
+  (let ((commit "384951de1d2d4986d0a1eb49f7a877775525117a")
+        (revision "2"))
+    (package
+      (name "r-rcas")
+      (version (string-append "0.0.0-" revision "." (string-take commit 9)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/BIMSBbioinfo/RCAS.git")
+                      (commit commit)))
+                (file-name (string-append name "-" version "-checkout"))
+                (sha256
+                 (base32
+                  "00hsr11cdkrkkgqfvsrdqdw10nni3l2qq4ykarmcr81ls86m28r2"))))
+      (build-system r-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'chdir
+             (lambda _ (chdir "RCAS") #t)))))
+      (native-inputs
+       `(("r-roxygen2" ,r-roxygen2)
+         ("r-knitr" ,r-knitr)))
+      (propagated-inputs
+       `(("r-data-table" ,r-data-table)
+         ("r-biomart" ,r-biomart)
+         ("r-org-hs-eg-db" ,r-org-hs-eg-db)
+         ("r-org-ce-eg-db" ,r-org-ce-eg-db)
+         ("r-org-dm-eg-db" ,r-org-dm-eg-db)
+         ("r-org-mm-eg-db" ,r-org-mm-eg-db)
+         ("r-bsgenome-hsapiens-ucsc-hg19"
+          ,r-bsgenome-hsapiens-ucsc-hg19)
+         ("r-bsgenome-mmusculus-ucsc-mm9"
+          ,r-bsgenome-mmusculus-ucsc-mm9)
+         ("r-bsgenome-celegans-ucsc-ce6"
+          ,r-bsgenome-celegans-ucsc-ce6)
+         ("r-bsgenome-dmelanogaster-ucsc-dm3"
+          ,r-bsgenome-dmelanogaster-ucsc-dm3)
+         ("r-topgo" ,r-topgo)
+         ("r-dt" ,r-dt)
+         ("r-plotly" ,r-plotly)
+         ("r-doparallel" ,r-doparallel)
+         ("r-motifrg" ,r-motifrg)
+         ("r-genomation" ,r-genomation)
+         ("r-genomicfeatures" ,r-genomicfeatures)
+         ("r-rtracklayer" ,r-rtracklayer)
+         ("r-rmarkdown" ,r-rmarkdown)))
+      (synopsis "RNA-centric annotation system")
+      (description
+       "RCAS aims to be a standalone RNA-centric annotation system
+that provides intuitive reports and publication-ready graphics.  This
+package provides the R library implementing most of the pipeline's
+features.")
+      (home-page "https://github.com/BIMSBbioinfo/RCAS")
+      (license license:expat))))
 
 (package
   (name "rcas")
