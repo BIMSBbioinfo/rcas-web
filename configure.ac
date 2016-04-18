@@ -57,26 +57,8 @@ if test "x$R" == x
 then
   AC_MSG_ERROR([R could not be found, so we cannot test for R packages.])
 else
-  AX_TEST_R_PACKAGE([genomation])
-  AX_TEST_R_PACKAGE([data.table])
-  AX_TEST_R_PACKAGE([biomaRt])
-  AX_TEST_R_PACKAGE([org.Hs.eg.db])
-  AX_TEST_R_PACKAGE([org.Ce.eg.db])
-  AX_TEST_R_PACKAGE([org.Dm.eg.db])
-  AX_TEST_R_PACKAGE([org.Mm.eg.db])
-  AX_TEST_R_PACKAGE([topGO])
-  AX_TEST_R_PACKAGE([DT])
-  AX_TEST_R_PACKAGE([plotly])
+  AX_TEST_R_PACKAGE([RCAS])
   AX_TEST_R_PACKAGE([doParallel])
-  AX_TEST_R_PACKAGE([GenomicFeatures])
-  AX_TEST_R_PACKAGE([rtracklayer])
-  AX_TEST_R_PACKAGE([rmarkdown])
-  AX_TEST_R_PACKAGE([motifRG])
-
-  AX_TEST_R_PACKAGE([BSgenome.Hsapiens.UCSC.hg19])
-  AX_TEST_R_PACKAGE([BSgenome.Mmusculus.UCSC.mm9])
-  AX_TEST_R_PACKAGE([BSgenome.Celegans.UCSC.ce6])
-  AX_TEST_R_PACKAGE([BSgenome.Dmelanogaster.UCSC.dm3])
 fi
 
 # Substitute placeholders to generate these target files
