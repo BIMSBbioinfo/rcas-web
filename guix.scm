@@ -114,37 +114,19 @@ features.")
   (source #f)
   (build-system gnu-build-system)
   (inputs
-   `(("bedtools" ,bedtools/patched)
-     ("r" ,r)
-     ("r-data-table" ,r-data-table)
-     ("r-biomart" ,r-biomart)
-     ("r-org-hs-eg-db" ,r-org-hs-eg-db)
-     ("r-org-ce-eg-db" ,r-org-ce-eg-db)
-     ("r-org-dm-eg-db" ,r-org-dm-eg-db)
-     ("r-org-mm-eg-db" ,r-org-mm-eg-db)
-     ("r-bsgenome-hsapiens-ucsc-hg19"
-      ,r-bsgenome-hsapiens-ucsc-hg19)
-     ("r-bsgenome-mmusculus-ucsc-mm9"
-      ,r-bsgenome-mmusculus-ucsc-mm9)
-     ("r-bsgenome-celegans-ucsc-ce6"
-      ,r-bsgenome-celegans-ucsc-ce6)
-     ("r-bsgenome-dmelanogaster-ucsc-dm3"
-      ,r-bsgenome-dmelanogaster-ucsc-dm3)
-     ("r-topgo" ,r-topgo)
+   `(("r" ,r)
+     ("r-rcas" ,r-rcas)
      ("r-dt" ,r-dt)
      ("r-plotly" ,r-plotly)
-     ("r-doparallel" ,r-doparallel)
-     ("r-motifrg" ,r-motifrg)
-     ("r-genomation" ,r-genomation)
-     ("r-genomicfeatures" ,r-genomicfeatures)
-     ("r-rtracklayer" ,r-rtracklayer)
-     ("r-rmarkdown" ,r-rmarkdown)))
+     ("r-doparallel" ,r-doparallel)))
   (native-inputs
    `(("autoconf" ,autoconf)
      ("automake" ,automake)))
-  (synopsis "RNA-centric annotation system")
+  (synopsis "Pipeline wrapper for RNA-centric annotation system")
   (description
    "RCAS aims to be a standalone RNA-centric annotation system that
 provides intuitive reports and publication-ready graphics.")
-  (home-page "TODO")
-  (license license:expat))
+  (home-page "https://github.com/BIMSBbioinfo/RCAS-tools")
+  ;; The web interface is released under GPLv3 or later.  The rest of
+  ;; the code is released under the Expat license.
+  (license (list license:expat license:gpl3+)))
