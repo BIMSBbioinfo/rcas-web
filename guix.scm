@@ -54,7 +54,7 @@
 (define-public r-rcas
   (package
     (name "r-rcas")
-    (version "0.99.1")
+    (version "0.99.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/RCAS/archive/v"
@@ -62,7 +62,7 @@
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "125khmxwzi08hglyiyxkwpnm23f0vmg8a7xbi5q05wpbbgqia9hz"))))
+                "0ng2hz8zb5lalq62qqnmh648b8srz48ar5shfk5snx44ka89xc41"))))
     (build-system r-build-system)
     (native-inputs
      `(("r-roxygen2" ,r-roxygen2)
