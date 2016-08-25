@@ -1,5 +1,6 @@
 ;;; rcas-web - Web interface for RCAS
 ;;; Copyright © 2016  Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014  David Thompson <davet@gnu.org>
 ;;;
 ;;; This program is free software: you can redistribute it and/or
 ;;; modify it under the terms of the GNU Affero General Public License
@@ -27,16 +28,10 @@
   #:use-module (rcas-web util)
   #:export (start-rcas-web))
 
-(define controller
-  (match-lambda
-   ((GET)
-    (render-html '(html (body (p "hello")))))
-   ((GET path ...)
-    (render-static-asset path))))
-
-(define (run-controller controller request)
-  (controller (cons (request-method request)
-                    (request-path-components request))))
+(define (run-controller controller request body)
+  ((controller request body)
+   (cons (request-method request)
+         (request-path-components request))))
 
 (define (handler request body controller)
   (format #t "~a ~a\n"
@@ -44,10 +39,10 @@
           (uri-path (request-uri request)))
   (apply values
          (append
-          (run-controller controller request)
+          (run-controller controller request body)
           (list controller))))
 
-(define (start-rcas-web)
+(define (start-rcas-web controller)
   (run-server (lambda args (apply handler args))
               'http
               `(#:addr ,INADDR_ANY

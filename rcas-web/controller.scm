@@ -1,6 +1,3 @@
-#!/bin/guile -s
-!#
-
 ;;; rcas-web - Web interface for RCAS
 ;;; Copyright © 2016  Ricardo Wurmus <rekado@elephly.net>
 ;;;
@@ -18,6 +15,21 @@
 ;;; License along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
 
-(use-modules (rcas-web server)
-             (rcas-web controller))
-(start-rcas-web controller)
+(define-module (rcas-web controller)
+  #:use-module (ice-9 match)
+  #:use-module (web request)
+  #:use-module (rcas-web multipart)
+  #:use-module (rcas-web controller upload)
+  #:use-module (rcas-web render)
+  #:use-module (rcas-web view html)
+  #:export (controller))
+
+(define (controller request body)
+  (match-lambda
+   ((GET)
+    (render-html index))
+   ((POST "uploads" ...)
+    (let ((parts (parse-request-body request body)))
+      (render-json (upload-handler parts))))
+   ((GET path ...)
+    (render-static-asset path))))
