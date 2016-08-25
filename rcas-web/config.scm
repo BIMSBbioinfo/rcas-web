@@ -21,6 +21,6 @@
             rcas-web-host
             rcas-web-port))
 
-(define rcas-web-asset-dir (getcwd))
+(define rcas-web-asset-dir (string-append (getcwd) "/rcas-web/assets"))
 (define rcas-web-host "localhost")
 (define rcas-web-port 8080)
