@@ -23,6 +23,7 @@
   #:use-module (json)
   #:use-module (rnrs io ports)
   #:use-module (rcas-web multipart)
+  #:use-module (rcas-web config)
   #:export (upload-handler))
 
 (define-record-type <qqchunk>
@@ -59,9 +60,8 @@ understood by the Fine Uploader JavaScript library."
   ;; Currently, we don't support chunking, so there's only one chunk
   ;; containing the whole file.
   ;; TODO: sanitize original file name?
-  ;; TODO: allow customization of temp dir
   (let* ((chunk (parts-to-chunk parts))
-         (target-name (string-append "/tmp/"
+         (target-name (string-append rcas-web-upload-dir "/"
                                      (qqchunk-uuid chunk) "-"
                                      (qqchunk-file-name chunk))))
     (catch #t
