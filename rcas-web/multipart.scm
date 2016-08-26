@@ -47,7 +47,7 @@ record object."
     (make-part
      (call-with-input-string
          ;; TODO: bytestring-append?
-         (string-append (bytevector->string prefix "ISO-8859-1")
+         (string-append (bytevector->string (bytevector-drop prefix 2) "ISO-8859-1")
                         "\r\n\r\n")
        read-headers)
      ;; Drop last two bytes because every part body ends with "\r\n".
@@ -61,7 +61,6 @@ record object."
     (map parse-form-part
          (split-parts (string-append "--" boundary) body))))
 
-;; TODO: reimplement in terms of bytevector-partition
 (define (split-parts boundary payload)
   "Split the bytevector PAYLOAD containing the request body at the
 given BOUNDARY string.  Return a list of bytevectors."
@@ -69,45 +68,13 @@ given BOUNDARY string.  Return a list of bytevectors."
   (define boundbv  (string->bytevector boundary (latin-1-codec)))
   (define boundlen (bytevector-length boundbv))
 
-  ;; Skip over the boundary and the "\r\n" (or "--") after it if we
-  ;; are at the beginning of the boundary string.
-  (define (at-boundary? port)
-    (let ((read (get-bytevector-n port boundlen)))
-      (cond
-       ((and (not (eof-object? read))
-             (bytevector=? read boundbv))
-        ;; throw away the next two bytes
-        (get-bytevector-n port 2)
-        #t)
-       (else (when (bytevector? read)
-               (unget-bytevector port read))
-             #f))))
-
-  ;; Read bytes from PORT until hitting a newline character.  Return
-  ;; read bytes as a bytevector.
-  (define (read-until-boundary port)
-    (call-with-values open-bytevector-output-port
-      (lambda (out get-bytevector)
-        (let loop ()
-          ;; TODO: read more than one byte at a time?
-          (let ((byte (get-u8 port)))
-            (if (eof-object? byte)
-                (get-bytevector)
-                (begin
-                  (put-u8 out byte)
-                  (if (and (equal? 10 byte)
-                           (at-boundary? port))
-                      (get-bytevector)
-                      (loop)))))))))
-
-  (call-with-port
-   (open-bytevector-input-port payload)
-   (lambda (port)
-     (at-boundary? port) ; skip first boundary
-     (let loop ((lst '()))
-       (let ((part (read-until-boundary port)))
-         (if (or (eof-object? part)
-                 (zero? (bytevector-length part)))
-             ;; The last part is always empty, so throw it away
-             (reverse (cdr lst))
-             (loop (cons part lst))))))))
+  (let loop ((rest payload)
+             (parts '()))
+    (match-let
+        (((prefix match suffix)
+          (bytevector-partition boundbv rest)))
+      (if suffix
+          (loop suffix
+                (cons prefix parts))
+          ;; The last part is always empty
+          (cdr (reverse parts))))))
