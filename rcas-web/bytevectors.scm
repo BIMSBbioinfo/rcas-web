@@ -57,6 +57,41 @@
 list of three values: the prefix, the separator, and the suffix.  If
 there is no match the list will only contain the prefix and return #f
 for the remaining values."
+  (define bv-length (bytevector-length bv))
+  (define separator-length (bytevector-length separator))
+  (define (at-separator-end? pos)
+    (let ((beg (- pos (- separator-length 1))))
+      (if (>= beg 0)
+          (let* ((check (make-bytevector separator-length)))
+            (bytevector-copy! bv beg check 0 separator-length)
+            (bytevector=? check separator))
+          #f)))
+
+  (let ((found (let scan-at ((pos 0))
+                 (let ((byte (bytevector-u8-ref bv pos)))
+                   (if (and (equal? byte (bytevector-last separator))
+                            (at-separator-end? pos))
+                       (1+ (- pos separator-length))
+                       (let ((next-pos (1+ pos)))
+                         (if (< next-pos bv-length)
+                             (scan-at next-pos)
+                             #f)))))))
+    (if found
+        (let* ((prefix (make-bytevector found))
+               (suffix-length (- bv-length
+                                 (+ found separator-length)))
+               (suffix (make-bytevector suffix-length)))
+          (bytevector-copy! bv 0 prefix 0 found)
+          (bytevector-copy! bv (+ found separator-length)
+                            suffix 0 suffix-length)
+          (list prefix separator suffix))
+        (list bv #f #f))))
+
+(define (bytevector-partition/slow separator bv)
+  "Find the bytevector SEPARATOR in the bytevector BV and return a
+list of three values: the prefix, the separator, and the suffix.  If
+there is no match the list will only contain the prefix and return #f
+for the remaining values."
   (define separator-length
     (bytevector-length separator))
 
