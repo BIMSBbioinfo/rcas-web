@@ -160,3 +160,19 @@ provides intuitive reports and publication-ready graphics.")
             (string-append all "/2.2"))))))
     (name "guile-next-redis")
     (native-inputs `(("guile-next" ,guile-next)))))
+
+(define-public rcas-web
+  (package (inherit rcas)
+    (name "rcas-web")
+    (version "0.0.0")
+    (inputs
+     `(("guile-next" ,guile-next)
+       ("guile-json" ,guile-next-json)
+       ("guile-redis" ,guile-next-redis)))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)))
+    (synopsis "Web interface for RNA-centric annotation system (RCAS)")
+    (license license:gpl3+)))
+
+rcas-web
