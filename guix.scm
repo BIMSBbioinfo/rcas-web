@@ -143,3 +143,20 @@ provides intuitive reports and publication-ready graphics.")
   (package (inherit guile-json)
     (name "guile-next-json")
     (native-inputs `(("guile-next" ,guile-next)))))
+
+(define-public guile-next-redis
+  (package
+    (inherit guile-redis)
+    (source
+     (origin
+       (inherit (package-source guile-redis))
+       (snippet
+        ;; Make sure everything goes under .../site/2.2, like Guile's
+        ;; search paths expects.
+        '(substitute* '("Makefile.in"
+                        "redis/Makefile.in"
+                        "redis/commands/Makefile.in")
+           (("moddir =.*/share/guile/site" all)
+            (string-append all "/2.2"))))))
+    (name "guile-next-redis")
+    (native-inputs `(("guile-next" ,guile-next)))))
