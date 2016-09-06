@@ -20,7 +20,8 @@
              (gnu packages)
              (gnu packages autotools)
              (gnu packages bioinformatics)
-             (gnu packages statistics))
+             (gnu packages statistics)
+             (gnu packages guile))
 
 ;; The latest release of bedtools (version 2.25.0 as of this writing)
 ;; segfaults on intersect, so we need a more recent version.  We
@@ -137,3 +138,8 @@ features.")
 provides intuitive reports and publication-ready graphics.")
       (home-page "https://github.com/BIMSBbioinfo/RCAS-tools")
       (license license:expat))))
+
+(define-public guile-next-json
+  (package (inherit guile-json)
+    (name "guile-next-json")
+    (native-inputs `(("guile-next" ,guile-next)))))
