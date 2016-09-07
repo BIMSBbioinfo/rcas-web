@@ -47,10 +47,13 @@
 (define %waiting    (string-append %prefix "waiting"))
 (define %processing (string-append %prefix "processing"))
 
-(define (enqueue filename)
-  "Append FILENAME to the waiting queue."
+(define (enqueue filename options)
+  "Append FILENAME to the waiting queue and store the OPTIONS."
   (with-redis
-   (rpush %waiting (list filename))))
+   (transaction
+    (rpush %waiting (list filename))
+    (set (string-append %prefix ":options:" filename)
+         (format #f "~a" options)))))
 
 (define (done? filename)
   "Return the processing result if the FILENAME has been processed or
@@ -66,19 +69,21 @@ This procedure blocks until processor exits.  Once PROCESSOR exits, an
 entry is created with the processed file name as key and the result as
 the value."
   ;; Block until there's something to process.
-  (let ((filename (car (with-redis
-                        (brpoplpush %waiting %processing 0)))))
-    ;; Process file
-    (let ((result (processor filename)))
-      (with-redis
-       (transaction
-        ;; Save the result.
-        (set (string-append %prefix filename)
-             (string-append result ":"
-                            (number->string (current-time))))
-        ;; We're done processing this.
-        (lrem %processing 0 filename))))
-    #t))
+  (let* ((filename (car (with-redis
+                         (brpoplpush %waiting %processing 0))))
+         (options  (car (with-redis
+                         (get (string-append %prefix ":options:" filename)))))
+         ;; Process the file!
+         (result   (processor filename options)))
+    (with-redis
+     (transaction
+      ;; Save the result.
+      (set (string-append %prefix filename)
+           (string-append result ":"
+                          (number->string (current-time))))
+      ;; We're done processing this.
+      (lrem %processing 0 filename)))
+    filename))
 
 (define (processing-num)
   "Return number of jobs in the processing queue."
