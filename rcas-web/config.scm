@@ -19,13 +19,15 @@
 (define-module (rcas-web config)
   #:export (rcas-web-asset-dir
             rcas-web-upload-dir
+            rcas-web-results-dir
             rcas-web-host
             rcas-web-port
 
             %Rscript))
 
 (define rcas-web-asset-dir (string-append (getcwd) "/rcas-web/assets"))
-(define rcas-web-upload-dir "/tmp/rcas-web")
+(define rcas-web-upload-dir  "/tmp/rcas-uploads")
+(define rcas-web-results-dir "/tmp/rcas-results")
 (define rcas-web-host "localhost")
 (define rcas-web-port 8080)
 
