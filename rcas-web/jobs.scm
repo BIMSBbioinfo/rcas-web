@@ -16,7 +16,12 @@
 ;;; <http://www.gnu.org/licenses/>.
 
 (define-module (rcas-web jobs)
-  #:use-module (redis))
+  #:use-module (redis)
+  #:export (enqueue
+            done?
+            process-next
+            processing-num
+            waiting-num))
 
 (define (flatten lst)
   (cond ((null? lst) '())
