@@ -115,6 +115,6 @@ output is redirected to log files."
 (define (worker-loop)
   "Process jobs forever.  Blocks if there are no jobs."
   (let ((processed (process-next rcas-job)))
-    (format #t "[~a] processed: ~a\n"
+    (format #t "[~a] done: ~a\n"
             (current-time) processed))
   (worker-loop))
