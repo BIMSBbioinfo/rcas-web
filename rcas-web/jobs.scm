@@ -62,11 +62,11 @@ the OPTIONS."
       (set (string-append %prefix ":options:" file-name)
            (format #f "~a" options))))))
 
-(define (done? filename)
-  "Return the processing result if the FILENAME has been processed or
+(define (done? file-name)
+  "Return the processing result if the FILE-NAME has been processed or
 #f if it has not."
   (let ((result
-         (car (with-redis (get (string-append %prefix filename))))))
+         (car (with-redis (get (string-append %prefix file-name))))))
     (if (null? result) #f
         result)))
 
