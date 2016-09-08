@@ -86,21 +86,31 @@ output is redirected to log files."
           ;; Convert options to an S-expression
           (call-with-input-string options read)))
 
-(define (rcas-job file options)
-  ;; TODO: make sure the FILE exists, is readable, and is a regular
+(define (rcas-job raw-file-name options)
+  ;; Make sure the RAW-FILE-NAME exists, is readable, and is a regular
   ;; file.  Also make sure that it is in the upload directory and
-  ;; nowhere else.  Don't use the FILE directly!
-  (format #t "[~a] rcas-job started for ~a with ~a\n"
-          (current-time) file options)
-  (let ((out (string-append rcas-web-results-dir
-                            "/" (basename file))))
-    (runReport (fold cons (sanitize-report-options options)
-                     `((queryFilePath . ,file)
-                       (outDir        . ,out))))
-    (let ((result-file (string-append out "/"
-                                      file ".RCAS.report.html")))
-      (if (file-exists? result-file) result-file
-          "ERROR: something went wrong"))))
+  ;; nowhere else.  Don't use the RAW-FILE-NAME directly!
+  (let* ((file-name (basename raw-file-name))
+         (input     (string-append rcas-web-upload-dir "/"
+                                   file-name))
+         (outdir    (string-append rcas-web-results-dir "/"
+                                   file-name)))
+    (if (and (file-exists? input)
+             (access? input R_OK))
+        (begin
+          (format #t "[~a] rcas-job started for ~a with ~a\n"
+                  (current-time) file-name options)
+          (runReport (fold cons (sanitize-report-options options)
+                           `((queryFilePath . ,input)
+                             (outDir        . ,outdir))))
+          (let ((result-file (string-append input ".RCAS.report.html")))
+            (if (file-exists? (string-append outdir "/" result-file))
+                result-file
+                #f)))
+        (begin
+          (format #t "[~a] ERROR rcas-job: cannot access file ~a\n"
+                  (current-time) file-name)
+          #f))))
 
 (define (worker-loop)
   "Process jobs forever.  Blocks if there are no jobs."
