@@ -84,8 +84,11 @@ the value."
      (transaction
       ;; Save the result.
       (set (string-append %prefix filename)
-           (string-append result ":"
-                          (number->string (current-time))))
+           (if (and result (string? result))
+               (string-append result ":"
+                              (number->string (current-time)))
+               (string-append "FAILED:"
+                              (number->string (current-time)))))
       ;; We're done processing this.
       (lrem %processing 0 filename)))
     filename))
