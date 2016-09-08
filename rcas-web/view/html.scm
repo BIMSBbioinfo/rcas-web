@@ -62,7 +62,7 @@
                       (aria-valuemin "0")
                       (aria-valuemax "100")
                       (class "qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"))))
-         (div (@ (class "qq-upload-button-selector qq-upload-button"))
+         (div (@ (class "qq-upload-button-selector btn btn-default"))
               (div "Upload a file"))
          (span (@ (class "qq-drop-processing-selector qq-drop-processing"))
                (span "Processing dropped file...")
