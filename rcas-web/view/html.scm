@@ -36,8 +36,7 @@
        (@ (rel "stylesheet")
           (media "screen")
           (type "text/css")
-          (href "css/screen.css")))
-      ,@head)
+          (href "css/screen.css"))))
      (body ,@body))))
 
 (define uploader-default-template
