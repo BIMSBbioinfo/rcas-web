@@ -26,7 +26,8 @@
       (meta (@ (http-equiv "Content-Type") (content "text/html; charset=UTF-8")))
       (meta (@ (http-equiv "Content-Language") (content "en")))
       (meta (@ (name "author") (content "Ricardo Wurmus")))
-      (meta (@ (name "viewport") (content "width=device-width")))
+      (meta (@ (name "viewport")
+               (content "width=device-width, initial-scale=1")))
       (link
        (@ (rel "stylesheet")
           (media "screen")
