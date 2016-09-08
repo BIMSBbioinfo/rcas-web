@@ -52,13 +52,15 @@
 (define %waiting    (string-append %prefix "waiting"))
 (define %processing (string-append %prefix "processing"))
 
-(define (enqueue filename options)
-  "Append FILENAME to the waiting queue and store the OPTIONS."
-  (with-redis
-   (transaction
-    (rpush %waiting (list filename))
-    (set (string-append %prefix ":options:" filename)
-         (format #f "~a" options)))))
+(define (enqueue raw-file-name options)
+  "Append the basename of RAW-FILE-NAME to the waiting queue and store
+the OPTIONS."
+  (let ((file-name (basename raw-file-name)))
+    (with-redis
+     (transaction
+      (rpush %waiting (list file-name))
+      (set (string-append %prefix ":options:" file-name)
+           (format #f "~a" options))))))
 
 (define (done? filename)
   "Return the processing result if the FILENAME has been processed or
@@ -73,25 +75,27 @@
 This procedure blocks until processor exits.  Once PROCESSOR exits, an
 entry is created with the processed file name as key and the result as
 the value."
-  ;; Block until there's something to process.
-  (let* ((filename (car (with-redis
-                         (brpoplpush %waiting %processing 0))))
-         (options  (car (with-redis
-                         (get (string-append %prefix ":options:" filename)))))
+  (let* ((file-name (basename
+                     (car (with-redis
+                           (brpoplpush %waiting %processing 0)))))
+         (options   (car (with-redis
+                          (get (string-append %prefix
+                                              ":options:"
+                                              file-name)))))
          ;; Process the file!
-         (result   (processor filename options)))
+         (result    (processor file-name options)))
     (with-redis
      (transaction
       ;; Save the result.
-      (set (string-append %prefix filename)
+      (set (string-append %prefix file-name)
            (if (and result (string? result))
                (string-append result ":"
                               (number->string (current-time)))
                (string-append "FAILED:"
                               (number->string (current-time)))))
       ;; We're done processing this.
-      (lrem %processing 0 filename)))
-    filename))
+      (lrem %processing 0 file-name)))
+    file-name))
 
 (define (processing-num)
   "Return number of jobs in the processing queue."
