@@ -54,7 +54,7 @@
          (div (@ (class "qq-upload-button-selector qq-upload-button"))
               (div "Upload a file"))
          (span (@ (class "qq-drop-processing-selector qq-drop-processing"))
-               (span "Processing dropped files...")
+               (span "Processing dropped file...")
                (span (@ (class "qq-drop-processing-spinner-selector qq-drop-processing-spinner"))))
          (ul (@ (class "qq-upload-list-selector qq-upload-list")
                 (aria-live "polite")
