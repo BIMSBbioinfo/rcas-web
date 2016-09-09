@@ -19,6 +19,9 @@
   #:use-module (redis)
   #:export (enqueue
             done?
+            get-status
+            get-options
+            get-result
             process-next
             processing-num
             waiting-num))
@@ -52,6 +55,34 @@
 (define %waiting    (string-append %prefix "waiting"))
 (define %processing (string-append %prefix "processing"))
 
+(define (make-getter field)
+  (lambda (file-name)
+    (car (with-redis
+          (get (string-append %prefix field ":" file-name))))))
+
+(define get-status  (make-getter "status"))
+(define get-options (make-getter "options"))
+(define get-result  (make-getter "result"))
+
+(define (set-status! file-name status)
+  (set (string-append %prefix "status:" file-name)
+       (string-append status ":"
+                      (number->string (current-time)))))
+
+(define (set-options! file-name options)
+  (set (string-append %prefix "options:" file-name)
+       (format #f "~a" options)))
+
+(define (set-result! file-name result)
+  (set (string-append %prefix "result:" file-name)
+       (format #f "~a" result)))
+
+(define (next-file)
+  "Wait for a file name to appear on the waiting list, then move it to
+the processing list and return the name."
+  (basename
+   (car (with-redis (brpoplpush %waiting %processing 0)))))
+
 (define (enqueue raw-file-name options)
   "Append the basename of RAW-FILE-NAME to the waiting queue and store
 the OPTIONS."
@@ -59,42 +90,36 @@ the OPTIONS."
     (with-redis
      (transaction
       (rpush %waiting (list file-name))
-      (set (string-append %prefix ":options:" file-name)
-           (format #f "~a" options))))))
+      (set-status! file-name "waiting")
+      (set-options! file-name options)))))
 
 (define (done? file-name)
   "Return the processing result if the FILE-NAME has been processed or
 #f if it has not."
-  (let ((result
-         (car (with-redis (get (string-append %prefix file-name))))))
-    (if (null? result) #f
-        result)))
+  (let ((status (get-status file-name))
+        (result (get-result file-name)))
+    (string-prefix? "success" status)))
 
 (define (process-next processor)
   "Get a file name from the waiting queue and run PROCESSOR on it.
-This procedure blocks until processor exits.  Once PROCESSOR exits, an
-entry is created with the processed file name as key and the result as
-the value."
-  (let* ((file-name (basename
-                     (car (with-redis
-                           (brpoplpush %waiting %processing 0)))))
-         (options   (car (with-redis
-                          (get (string-append %prefix
-                                              ":options:"
-                                              file-name)))))
-         ;; Process the file!
-         (result    (processor file-name options)))
+This procedure blocks until processor exits.  Once PROCESSOR exits,
+the job status and result are updated."
+  (let* ((file-name (next-file))
+         (options   (get-options file-name)))
     (with-redis
-     (transaction
-      ;; Save the result.
-      (set (string-append %prefix file-name)
-           (if (and result (string? result))
-               (string-append result ":"
-                              (number->string (current-time)))
-               (string-append "FAILED:"
-                              (number->string (current-time)))))
-      ;; We're done processing this.
-      (lrem %processing 0 file-name)))
+     (set-status! file-name "processing"))
+    ;; Process the file!
+    ;; TODO: adjust to return multiple values (message and success?)
+    (let ((result (processor file-name options)))
+      (with-redis
+       (transaction
+        (set-result! file-name result)
+        ;; TODO: store error message in result if job failed
+        (if (and result (string? result))
+            (set-status! file-name "success")
+            (set-status! file-name "failed"))
+        ;; We're done processing this.
+        (lrem %processing 0 file-name))))
     file-name))
 
 (define (processing-num)
