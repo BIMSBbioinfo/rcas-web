@@ -17,7 +17,8 @@
 
 (define-module (rcas-web view html)
   #:export (index
-            result))
+            result-page
+            invalid-result))
 
 (define* (layout #:key (head '()) (body '()))
   `((doctype "html")
@@ -197,7 +198,31 @@
       (@ (type "text/javascript")
          (src "js/init-fine-uploader.js"))))))
 
-(define (result id)
+(define (result-page id status result refresh?)
+  (layout
+   #:head
+   (if refresh?
+       `((meta (@ (http-equiv "refresh")
+                   (content ,(string-append "30; URL=/result/" id)))))
+       '())
+   #:body
+   `(,(jumbotron
+       `(p "Results page for file "
+           (strong ,id)))
+     (div (@ (class "container"))
+          (p ,(format #f "Status: ~a" status))
+          ,(if refresh?
+               '(p "This page will try to refresh in 30 seconds.")
+               '(p "How about running RCAS on another file?"))))))
+
+(define (invalid-result id)
   (layout
    #:body
-   `((p ,(format #f "Hello there.  This is the page for ~a." id)))))
+   `(,(jumbotron
+       `(p "There are no results for file "
+           (strong ,id)))
+     (div (@ (class "container"))
+          (p "The result id does not exist.  Results are only kept for
+a limited amount of time.")
+          (a (@ (href "/"))
+             "How about running RCAS on another file?")))))
