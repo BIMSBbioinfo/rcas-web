@@ -112,6 +112,14 @@
                                  (class "qq-ok-button-selector"))
                               "Okay"))))))
 
+(define (jumbotron body)
+  `(div (@ (class "jumbotron"))
+        (div (@ (class "container"))
+             (a (@ (href "/"))
+                (h1 "RCAS"
+                    (small "Really Cool Automagic Software")))
+             ,body)))
+
 (define index
   (layout
    #:head
@@ -123,11 +131,8 @@
          (type "text/css")
          (href "fine-uploader/fine-uploader-new.css"))))
    #:body
-   `((div (@ (class "jumbotron"))
-          (div (@ (class "container"))
-               (h1 "RCAS"
-                   (small "Really Cool Automagic Software"))
-               (p "There should be some text, explaining how this all works.")))
+   `(,(jumbotron
+       '(p "There should be some text, explaining how this all works."))
      (div (@ (class "container"))
           (form (@ (id "qq-form"))
            (div (@ (class "form-group row"))
