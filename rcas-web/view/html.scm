@@ -57,7 +57,7 @@
        (id "qq-template"))
     (div (@ (class "qq-uploader-selector qq-uploader"))
          (div (@ (class "qq-upload-button-selector btn btn-default"))
-              (div "Upload a file"))
+              (div "Select a file for upload"))
          (span (@ (class "qq-drop-processing-selector qq-drop-processing"))
                (span "Processing dropped file...")
                (span (@ (class "qq-drop-processing-spinner-selector qq-drop-processing-spinner"))))
@@ -128,7 +128,7 @@
                    (small "Really Cool Automagic Software"))
                (p "There should be some text, explaining how this all works.")))
      (div (@ (class "container"))
-          (form
+          (form (@ (id "qq-form"))
            (div (@ (class "form-group row"))
                 (label (@ (class "col-md-2 control-label"))
                        "BED file to analyze")
