@@ -218,7 +218,8 @@
                '())
           ,(if refresh?
                '(p "This page will try to refresh in 30 seconds.")
-               '(p "How about running RCAS on another file?"))))))
+               '(p (a (@ (href "/"))
+                      "How about running RCAS on another file?")))))))
 
 (define (invalid-result id)
   (layout
@@ -229,5 +230,5 @@
      (div (@ (class "container"))
           (p "The result id does not exist.  Results are only kept for
 a limited amount of time.")
-          (a (@ (href "/"))
-             "How about running RCAS on another file?")))))
+          (p (a (@ (href "/"))
+                "How about running RCAS on another file?"))))))
