@@ -29,5 +29,7 @@
     (render-html index))
    ((POST "uploads" ...)
     (render-json (upload-handler request body)))
+   ((GET "result" id)
+    (render-html (result id)))
    ((GET path ...)
     (render-static-asset path))))

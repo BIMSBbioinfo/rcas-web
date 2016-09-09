@@ -16,7 +16,8 @@
 ;;; <http://www.gnu.org/licenses/>.
 
 (define-module (rcas-web view html)
-  #:export (index))
+  #:export (index
+            result))
 
 (define* (layout #:key (head '()) (body '()))
   `((doctype "html")
@@ -190,3 +191,8 @@
      (script
       (@ (type "text/javascript")
          (src "js/init-fine-uploader.js"))))))
+
+(define (result id)
+  (layout
+   #:body
+   `((p ,(format #f "Hello there.  This is the page for ~a." id)))))

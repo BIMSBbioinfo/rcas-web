@@ -7,5 +7,10 @@ var uploader = new qq.FineUploader({
   failedUploadTextDisplay: {
     mode: 'custom',
     responseProperty: 'error'
+  },
+  callbacks: {
+    onComplete: function(id, name, responseJSON, xhr) {
+      window.location = "/result/"+responseJSON['result'];
+    }
   }
 });
