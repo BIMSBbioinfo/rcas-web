@@ -14,5 +14,11 @@ h1 small {
 }
 
 .qq-uploader {
-    width: 100%;
+    width: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    border: none;
+    border-radius: 0;
+    background-color: inherit;
+    padding: 0;
 }
