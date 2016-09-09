@@ -35,27 +35,34 @@
   (total-file-size  qqchunk-total-file-size)
   (file             qqchunk-file))
 
-(define (parts-to-chunk parts)
-  "Collect all needed bits from the list of PARTS to build a <qqchunk>
+(define (form->qqchunk form-alist)
+  "Collect all needed bits from the FORM-ALIST to build a <qqchunk>
 representing the uploaded chunk."
   (define (as-string bv)
     (bytevector->string bv "ISO-8859-1"))
-  (let ((chunk-alist (fold (lambda (part acc)
-                             (match (assoc-ref (part-headers part)
-                                               'content-disposition)
-                               ((path *** ('name . name))
-                                (cons `(,name . ,(part-body part))
-                                      acc))))
-                           '() parts)))
-    (make-chunk
-     (as-string (assoc-ref chunk-alist "qquuid"))
-     (as-string (assoc-ref chunk-alist "qqfilename"))
-     (assoc-ref chunk-alist "qqtotalfilesize")
-     (assoc-ref chunk-alist "qqfile"))))
+  (make-chunk
+   (as-string (assoc-ref form-alist "qquuid"))
+   (as-string (assoc-ref form-alist "qqfilename"))
+   (assoc-ref form-alist "qqtotalfilesize")
+   (assoc-ref form-alist "qqfile")))
+
+(define (form-parts->alist parts)
+  "Create an alist from the list of PARTS in which the form names map
+to their respective values."
+  (fold (lambda (part acc)
+          (match (assoc-ref (part-headers part)
+                            'content-disposition)
+            ((path *** ('name . name))
+             (cons `(,name . ,(part-body part))
+                   acc))))
+        '() parts))
 
 (define %max-upload-size (* 100 1024 1024)) ;100 MiB
 
 (define (upload-handler request body)
+  "Handle the upload request and enqueue a job to process the file.
+Returns a JSON status message that is understood by the Fine Uploader
+JavaScript library."
   (let ((size (request-content-length request)))
     (if (> size %max-upload-size)
         (json
@@ -63,35 +70,38 @@ representing the uploaded chunk."
           ("error"
            ,(format #f "The file is too large!  File size must be less than ~a MiB."
                     (/ %max-upload-size 1024 1024)))))
-        (let ((parts (parse-request-body request body)))
-          (save-uploaded-file parts)))))
+        (let* ((parts (parse-request-body request body))
+               (form-alist (form-parts->alist parts)))
+          (catch #t
+            (lambda ()
+              (let ((result (save-uploaded-file form-alist)))
+                ;; TODO: enqueue job!
+                (json
+                 (object
+                  ("success" "true")
+                  ("result" ,result)))))
+            (lambda (key . rest)
+              (json
+               (object
+                ("error" ,(with-output-to-string
+                            (lambda ()
+                              (format #t "~a: ~a" key rest))))))))))))
 
-(define (save-uploaded-file parts)
-  "Process the PARTS of the multipart request to write the uploaded
-data to a local file.  Returns a JSON status message that is
-understood by the Fine Uploader JavaScript library."
+(define (save-uploaded-file form-alist)
+  "Process the FORM-ALIST of the multipart request to write the
+uploaded data to a local file.  Return the unique file id."
   ;; Currently, we don't support chunking, so there's only one chunk
   ;; containing the whole file.
   ;; TODO: sanitize original file name?
-  (let* ((chunk (parts-to-chunk parts))
+  (let* ((chunk (form->qqchunk form-alist))
          (target-name (string-append rcas-web-upload-dir "/"
                                      (qqchunk-uuid chunk) "-"
                                      (qqchunk-file-name chunk))))
-    (catch #t
+    ;; Write the bytevector to file.  We don't care what's really
+    ;; inside.
+    (with-output-to-file target-name
       (lambda ()
-        ;; Write the bytevector to file.  We don't care what's really
-        ;; inside.
-        (with-output-to-file target-name
-          (lambda ()
-            (put-bytevector (current-output-port)
-                            (qqchunk-file chunk)))
-          #:binary #t)
-        (json
-         (object
-          ("success" "true"))))
-      (lambda (key . rest)
-        (json
-         (object
-          ("error" ,(with-output-to-string
-                      (lambda ()
-                        (format #t "~a: ~a" key rest))))))))))
+        (put-bytevector (current-output-port)
+                        (qqchunk-file chunk)))
+      #:binary #t)
+    (qqchunk-uuid chunk)))
