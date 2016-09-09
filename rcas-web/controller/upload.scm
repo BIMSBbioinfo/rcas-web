@@ -22,6 +22,7 @@
   #:use-module (srfi srfi-9)
   #:use-module (json)
   #:use-module (rnrs io ports)
+  #:use-module (web request)
   #:use-module (rcas-web multipart)
   #:use-module (rcas-web config)
   #:export (upload-handler))
@@ -52,8 +53,20 @@ representing the uploaded chunk."
      (assoc-ref chunk-alist "qqtotalfilesize")
      (assoc-ref chunk-alist "qqfile"))))
 
+(define %max-upload-size (* 100 1024 1024)) ;100 MiB
 
-(define (upload-handler parts)
+(define (upload-handler request body)
+  (let ((size (request-content-length request)))
+    (if (> size %max-upload-size)
+        (json
+         (object
+          ("error"
+           ,(format #f "The file is too large!  File size must be less than ~a MiB."
+                    (/ %max-upload-size 1024 1024)))))
+        (let ((parts (parse-request-body request body)))
+          (save-uploaded-file parts)))))
+
+(define (save-uploaded-file parts)
   "Process the PARTS of the multipart request to write the uploaded
 data to a local file.  Returns a JSON status message that is
 understood by the Fine Uploader JavaScript library."
