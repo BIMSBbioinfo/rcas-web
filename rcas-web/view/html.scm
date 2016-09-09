@@ -33,7 +33,7 @@
        (@ (rel "stylesheet")
           (media "screen")
           (type "text/css")
-          (href "css/reset.css")))
+          (href "/css/reset.css")))
       (link
        (@ (rel "stylesheet")
           (href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")
@@ -49,7 +49,7 @@
        (@ (rel "stylesheet")
           (media "screen")
           (type "text/css")
-          (href "css/screen.css"))))
+          (href "/css/screen.css"))))
      (body ,@body))))
 
 (define uploader-default-template
