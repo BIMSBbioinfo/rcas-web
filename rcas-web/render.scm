@@ -37,7 +37,8 @@
 (define file-mime-types
   '(("css" . (text/css))
     ("js"  . (text/javascript))
-    ("png" . (image/png))))
+    ("png" . (image/png))
+    ("gif" . (image/gif))))
 
 (define (render-static-asset path)
   (let ((file-name (string-join (cons* rcas-web-asset-dir path) "/")))
