@@ -3,5 +3,9 @@ var uploader = new qq.FineUploader({
   multiple: false,
   request: {
     endpoint: '/uploads'
+  },
+  failedUploadTextDisplay: {
+    mode: 'custom',
+    responseProperty: 'error'
   }
 });
