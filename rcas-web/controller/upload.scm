@@ -24,6 +24,7 @@
   #:use-module (rnrs io ports)
   #:use-module (web request)
   #:use-module (rcas-web multipart)
+  #:use-module (rcas-web jobs)
   #:use-module (rcas-web config)
   #:export (upload-handler))
 
@@ -74,12 +75,13 @@ JavaScript library."
                (form-alist (form-parts->alist parts)))
           (catch #t
             (lambda ()
-              (let ((result (save-uploaded-file form-alist)))
-                ;; TODO: enqueue job!
+              (let ((id (save-uploaded-file form-alist)))
+                ;; TODO: enqueue job with options!
+                (enqueue id '())
                 (json
                  (object
                   ("success" "true")
-                  ("result" ,result)))))
+                  ("result" ,id)))))
             (lambda (key . rest)
               (json
                (object
