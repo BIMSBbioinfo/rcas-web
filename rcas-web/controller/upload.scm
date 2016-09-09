@@ -92,11 +92,9 @@ JavaScript library."
 uploaded data to a local file.  Return the unique file id."
   ;; Currently, we don't support chunking, so there's only one chunk
   ;; containing the whole file.
-  ;; TODO: sanitize original file name?
   (let* ((chunk (form->qqchunk form-alist))
          (target-name (string-append rcas-web-upload-dir "/"
-                                     (qqchunk-uuid chunk) "-"
-                                     (qqchunk-file-name chunk))))
+                                     (qqchunk-uuid chunk))))
     ;; Write the bytevector to file.  We don't care what's really
     ;; inside.
     (with-output-to-file target-name
