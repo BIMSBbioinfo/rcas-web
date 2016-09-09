@@ -103,7 +103,7 @@ output is redirected to log files."
           (runReport (fold cons (sanitize-report-options options)
                            `((queryFilePath . ,input)
                              (outDir        . ,outdir))))
-          (let ((result-file (string-append input ".RCAS.report.html")))
+          (let ((result-file (string-append file-name ".RCAS.report.html")))
             (if (file-exists? (string-append outdir "/" result-file))
                 result-file
                 #f)))
