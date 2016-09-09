@@ -27,6 +27,7 @@
   #:use-module (rcas-web config)
   #:use-module (rcas-web util)
   #:export (render-static-asset
+            render-report
             render-html
             render-json
             not-found
@@ -38,7 +39,22 @@
   '(("css" . (text/css))
     ("js"  . (text/javascript))
     ("png" . (image/png))
-    ("gif" . (image/gif))))
+    ("gif" . (image/gif))
+    ("html" . (text/html))))
+
+;; TODO: merge with render-static-asset
+(define (render-report id)
+  (let ((file-name (string-join (list rcas-web-results-dir id
+                                      (string-append id ".RCAS.report.html")) "/")))
+    (if (and (file-exists? file-name)
+             (not (directory? file-name)))
+        (list `((content-type . ,(assoc-ref file-mime-types
+                                            (file-extension file-name))))
+              (call-with-input-file file-name get-bytevector-all))
+        (not-found (build-uri 'http
+                              #:host rcas-web-host
+                              #:port rcas-web-port
+                              #:path (string-join id "/" 'prefix))))))
 
 (define (render-static-asset path)
   (let ((file-name (string-join (cons* rcas-web-asset-dir path) "/")))

@@ -211,6 +211,11 @@
            (strong ,id)))
      (div (@ (class "container"))
           (p ,(format #f "Status: ~a" status))
+          ,(if (string-prefix? "success" status)
+               `(p (a (@ (href ,(string-append "/result/"
+                                               id "/report")))
+                      "Access the RCAS report here."))
+               '())
           ,(if refresh?
                '(p "This page will try to refresh in 30 seconds.")
                '(p "How about running RCAS on another file?"))))))

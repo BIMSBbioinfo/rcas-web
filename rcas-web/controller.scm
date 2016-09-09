@@ -32,5 +32,7 @@
     (render-json (upload-handler request body)))
    ((GET "result" id)
     (render-html (result-handler id)))
+   ((GET "result" id "report")
+    (render-report id))
    ((GET path ...)
     (render-static-asset path))))
