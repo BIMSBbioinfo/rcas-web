@@ -10,7 +10,9 @@ var uploader = new qq.FineUploader({
   },
   callbacks: {
     onComplete: function(id, name, responseJSON, xhr) {
-      window.location = "/result/"+responseJSON['result'];
+      if (responseJSON['success']) {
+        window.location = "/result/"+responseJSON['result'];
+      }
     }
   }
 });
