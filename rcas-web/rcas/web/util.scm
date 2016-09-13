@@ -16,7 +16,7 @@
 ;;; License along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
 
-(define-module (rcas-web util)
+(define-module (rcas web util)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (web request)

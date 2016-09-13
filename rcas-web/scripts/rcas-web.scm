@@ -1,3 +1,6 @@
+#!/bin/guile -s
+!#
+
 ;;; rcas-web - Web interface for RCAS
 ;;; Copyright © 2016  Ricardo Wurmus <rekado@elephly.net>
 ;;;
@@ -15,19 +18,6 @@
 ;;; License along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
 
-(define-module (rcas-web config)
-  #:export (rcas-web-asset-dir
-            rcas-web-upload-dir
-            rcas-web-results-dir
-            rcas-web-host
-            rcas-web-port
-
-            %Rscript))
-
-(define rcas-web-asset-dir (string-append (getcwd) "/rcas-web/assets"))
-(define rcas-web-upload-dir  "/tmp/rcas-uploads")
-(define rcas-web-results-dir "/tmp/rcas-results")
-(define rcas-web-host "localhost")
-(define rcas-web-port 8080)
-
-(define %Rscript "Rscript")
+(use-modules (rcas web server)
+             (rcas web controller))
+(start-rcas-web controller)

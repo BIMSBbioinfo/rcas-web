@@ -19,6 +19,6 @@
 ;;; License along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
 
-(use-modules (rcas-web worker))
 (set! %load-path (cons (getcwd) %load-path))
+(use-modules (rcas web worker))
 (worker-loop)

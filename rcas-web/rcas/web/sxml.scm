@@ -22,7 +22,7 @@
 ;;
 ;;; Code:
 
-(define-module (rcas-web sxml)
+(define-module (rcas web sxml)
   #:use-module (sxml simple)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)

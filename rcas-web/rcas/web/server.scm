@@ -16,16 +16,16 @@
 ;;; License along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
 
-(define-module (rcas-web server)
+(define-module (rcas web server)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (web http)
   #:use-module (web request)
   #:use-module (web server)
   #:use-module (web uri)
-  #:use-module (rcas-web config)
-  #:use-module (rcas-web render)
-  #:use-module (rcas-web util)
+  #:use-module (rcas config)
+  #:use-module (rcas web render)
+  #:use-module (rcas web util)
   #:export (start-rcas-web))
 
 (define (run-controller controller request body)

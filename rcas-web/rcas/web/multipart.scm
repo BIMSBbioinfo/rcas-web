@@ -15,8 +15,8 @@
 ;;; License along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
 
-(define-module (rcas-web multipart)
-  #:use-module (rcas-web bytevectors)
+(define-module (rcas web multipart)
+  #:use-module (rcas web bytevectors)
   #:use-module (ice-9 match)
   #:use-module (ice-9 iconv)
   #:use-module ((ice-9 binary-ports) #:select (unget-bytevector))

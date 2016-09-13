@@ -15,10 +15,10 @@
 ;;; License along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
 
-(define-module (rcas-web worker)
-  #:use-module (rcas-web config)
-  #:use-module (rcas-web jobs)
-  #:use-module (rcas-web r)
+(define-module (rcas utils worker)
+  #:use-module (rcas config)
+  #:use-module (rcas utils jobs)
+  #:use-module (rcas utils r)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:export (worker-loop))

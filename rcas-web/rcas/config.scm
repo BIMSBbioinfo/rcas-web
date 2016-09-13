@@ -15,22 +15,19 @@
 ;;; License along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
 
-(define-module (rcas-web controller result)
-  #:use-module (rcas-web jobs)
-  #:use-module (rcas-web view html)
-  #:export (result-handler))
+(define-module (rcas config)
+  #:export (rcas-web-asset-dir
+            rcas-web-upload-dir
+            rcas-web-results-dir
+            rcas-web-host
+            rcas-web-port
 
-(define (result-handler id)
-  (let ((status (get-status id))
-        (result (get-result id)))
-    (cond
-     ((null? status)
-      (invalid-result id))
-     ((string-prefix? "waiting" status)
-      (result-page id status #f #t))
-     ((string-prefix? "processing" status)
-      (result-page id status #f #t))
-     ((string-prefix? "success" status)
-      (result-page id status result #f))
-     ((string-prefix? "failed" status)
-      (result-page id status result #f)))))
+            %Rscript))
+
+(define rcas-web-asset-dir (string-append (getcwd) "/assets"))
+(define rcas-web-upload-dir  "/tmp/rcas-uploads")
+(define rcas-web-results-dir "/tmp/rcas-results")
+(define rcas-web-host "localhost")
+(define rcas-web-port 8080)
+
+(define %Rscript "Rscript")

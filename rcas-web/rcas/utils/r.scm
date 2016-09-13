@@ -15,9 +15,9 @@
 ;;; License along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
 
-(define-module (rcas-web r)
+(define-module (rcas utils r)
   #:use-module (ice-9 match)
-  #:use-module (rcas-web config)
+  #:use-module (rcas config)
   #:export (runR
             scheme->R))
 

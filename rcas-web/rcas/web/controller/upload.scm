@@ -15,7 +15,7 @@
 ;;; License along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
 
-(define-module (rcas-web controller upload)
+(define-module (rcas web controller upload)
   #:use-module (ice-9 match)
   #:use-module (ice-9 iconv)
   #:use-module (srfi srfi-1)
@@ -23,9 +23,9 @@
   #:use-module (json)
   #:use-module (rnrs io ports)
   #:use-module (web request)
-  #:use-module (rcas-web multipart)
-  #:use-module (rcas-web jobs)
-  #:use-module (rcas-web config)
+  #:use-module (rcas web multipart)
+  #:use-module (rcas utils jobs)
+  #:use-module (rcas config)
   #:export (upload-handler))
 
 (define-record-type <qqchunk>

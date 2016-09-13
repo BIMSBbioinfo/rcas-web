@@ -18,14 +18,14 @@
 
 ;; This code was snarfed from David Thompson's guix-web.
 
-(define-module (rcas-web render)
+(define-module (rcas web render)
   #:use-module (ice-9 binary-ports)
   #:use-module (web response)
   #:use-module (web uri)
   #:use-module (json)
-  #:use-module (rcas-web sxml)
-  #:use-module (rcas-web config)
-  #:use-module (rcas-web util)
+  #:use-module (rcas config)
+  #:use-module (rcas web sxml)
+  #:use-module (rcas web util)
   #:export (render-static-asset
             render-report
             render-html

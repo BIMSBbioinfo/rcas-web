@@ -15,7 +15,7 @@
 ;;; License along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
 
-(define-module (rcas-web view html)
+(define-module (rcas web view html)
   #:export (index
             result-page
             invalid-result))
