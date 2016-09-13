@@ -139,27 +139,8 @@ provides intuitive reports and publication-ready graphics.")
       (home-page "https://github.com/BIMSBbioinfo/RCAS-tools")
       (license license:expat))))
 
-(define-public guile-next-json
-  (package (inherit guile-json)
-    (name "guile-next-json")
-    (native-inputs `(("guile-next" ,guile-next)))))
-
-(define-public guile-next-redis
-  (package
-    (inherit guile-redis)
-    (source
-     (origin
-       (inherit (package-source guile-redis))
-       (snippet
-        ;; Make sure everything goes under .../site/2.2, like Guile's
-        ;; search paths expects.
-        '(substitute* '("Makefile.in"
-                        "redis/Makefile.in"
-                        "redis/commands/Makefile.in")
-           (("moddir =.*/share/guile/site" all)
-            (string-append all "/2.2"))))))
-    (name "guile-next-redis")
-    (native-inputs `(("guile-next" ,guile-next)))))
+(define-public guile2.2-redis
+  ((@@ (gnu packages guile) package-for-guile-2.2) guile-redis))
 
 (define-public rcas-web
   (package (inherit rcas)
@@ -167,8 +148,8 @@ provides intuitive reports and publication-ready graphics.")
     (version "0.0.0")
     (inputs
      `(("guile-next" ,guile-next)
-       ("guile-json" ,guile-next-json)
-       ("guile-redis" ,guile-next-redis)))
+       ("guile-json" ,guile2.2-json)
+       ("guile-redis" ,guile2.2-redis)))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)))
