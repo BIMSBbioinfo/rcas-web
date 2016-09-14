@@ -1,0 +1,78 @@
+* RCAS web interface
+
+This is a simple web interface for RCAS.  A user may upload a BED
+file, configure options for RCAS, and then schedule RCAS to be run on
+the file.
+
+Separate worker processes pick up the jobs and run them.  Once they
+are done the user is provided with a link to the generated RCAS
+report.
+
+** Preparing the environment
+
+The easiest way to set up the RCAS web interface is to use GNU Guix.
+We need the Redis server to be running and we need to be in an
+environment in which RCAS itself is available.
+
+You can achieve this by running the following commands:
+
+#+BEGIN_SRC sh
+guix environment --ad-hoc redis r-rcas
+#+END_SRC
+
+Inside of this environment we create an environment needed to build
+and use the web interface.
+
+#+BEGIN_SRC sh
+cd ~/dev/RCAS-tools
+guix environment --load=guix.scm
+#+END_SRC
+
+** Configuring RCAS web
+
+Currently, there isn’t much you can configure, and it’s not convenient
+to override settings.  A couple of things can be changed in
+=rcas/config.scm= but at the moment you cannot even modify the port on
+which the web interface listens for HTTP requests.  This will be
+changed eventually.
+
+** Building RCAS web
+
+Now we’re ready to build the web interface.  RCAS web uses the common
+GNU build system.
+
+#+BEGIN_SRC sh
+cd rcas-web
+autoreconf -vif
+./configure --prefix=/srv/rcas-web
+make
+#+END_SRC
+
+At this point you can already use RCAS web—without installing it—by
+using the “pre-inst-env” script, e.g. to start the web server:
+
+#+BEGIN_SRC sh
+./pre-inst-env scripts/rcas-web server
+#+END_SRC
+
+** Installing RCAS web
+
+Alternatively, you can install RCAS web by running =make install= as root.
+
+To start the application web server and the worker process(es) do this:
+
+#+BEGIN_SRC sh
+${prefix}/bin/rcas-web server &
+${prefix}/bin/rcas-web worker &
+#+END_SRC
+
+You can and should run a larger number of worker processes.
+Currently, one worker process runs exactly one job at a time.
+
+** License
+
+The RCAS web interface is free software: you can redistribute it
+and/or modify it under the terms of the GNU Affero General Public
+License as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+
