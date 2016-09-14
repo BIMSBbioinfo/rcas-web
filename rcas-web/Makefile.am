@@ -39,6 +39,7 @@ SSOURCES =							\
   rcas/ui.scm						\
   rcas/utils/worker.scm				\
   rcas/utils/r.scm					\
+  rcas/utils/report.scm				\
   rcas/utils/jobs.scm				\
   rcas/web/controller/upload.scm	\
   rcas/web/controller/result.scm	\

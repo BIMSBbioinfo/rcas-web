@@ -17,6 +17,7 @@
 
 (define-module (rcas utils worker)
   #:use-module (rcas config)
+  #:use-module (rcas utils report)
   #:use-module (rcas utils jobs)
   #:use-module (rcas utils r)
   #:use-module (ice-9 match)
@@ -65,26 +66,6 @@ output is redirected to log files."
                    (type . "message"))
              (library "RCAS")
              (RCAS::runReport ,@options))))))
-
-(define (sanitize-report-options options)
-  "Leave only whitelisted pairs in the given OPTIONS."
-  (define permitted-report-options
-    '(;;queryFilePath <-- always ignore!
-      ;;outDir        <-- always ignore!
-      gffFilePath
-      msigdbFilePath
-      annotationSummary
-      goAnalysis
-      msigdbAnalysis
-      motifAnalysis
-      genomeVersion
-      printProcessedTables
-      sampleN))
-  (filter (match-lambda
-            ((key . value)
-             (member key permitted-report-options)))
-          ;; Convert options to an S-expression
-          (call-with-input-string options read)))
 
 (define (rcas-job raw-file-name options)
   ;; Make sure the RAW-FILE-NAME exists, is readable, and is a regular

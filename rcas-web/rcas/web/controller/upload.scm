@@ -25,6 +25,7 @@
   #:use-module (web request)
   #:use-module (rcas web multipart)
   #:use-module (rcas utils jobs)
+  #:use-module (rcas utils report)
   #:use-module (rcas config)
   #:export (upload-handler))
 
@@ -76,8 +77,7 @@ JavaScript library."
           (catch #t
             (lambda ()
               (let ((id (save-uploaded-file form-alist)))
-                ;; TODO: enqueue job with options!
-                (enqueue id '())
+                (enqueue id (report-form-options->options form-alist))
                 (json
                  (object
                   ("success" "true")

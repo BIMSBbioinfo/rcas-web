@@ -71,7 +71,7 @@
 
 (define (set-options! file-name options)
   (set (string-append %prefix "options:" file-name)
-       (format #f "~a" options)))
+       (format #f "~s" options)))
 
 (define (set-result! file-name result)
   (set (string-append %prefix "result:" file-name)
