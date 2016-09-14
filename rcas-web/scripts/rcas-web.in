@@ -1,0 +1,80 @@
+#!@GUILE@ -s
+!#
+
+;;; rcas-web - Web interface for RCAS
+;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2013 Mark H Weaver <mhw@netris.org>
+;;;
+;;; This program is free software: you can redistribute it and/or
+;;; modify it under the terms of the GNU Affero General Public License
+;;; as published by the Free Software Foundation, either version 3 of
+;;; the License, or (at your option) any later version.
+;;;
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;;; Affero General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU Affero General Public
+;;; License along with this program.  If not, see
+;;; <http://www.gnu.org/licenses/>.
+
+
+;;; The code to augment Guile's load path has been snarfed from GNU
+;;; Guix.
+
+(use-modules (ice-9 regex)
+             (ice-9 match)
+             (srfi srfi-26))
+
+(let ()
+  (define-syntax-rule (push! elt v) (set! v (cons elt v)))
+
+  (define config-lookup
+    (let ((config '(("prefix"         . "@prefix@")
+                    ("datarootdir"    . "@datarootdir@")
+                    ("guilemoduledir" . "@guilemoduledir@")
+                    ("localedir"      . "@localedir@")))
+          (var-ref-regexp (make-regexp "\\$\\{([a-z]+)\\}")))
+      (define (expand-var-ref match)
+        (lookup (match:substring match 1)))
+      (define (expand str)
+        (regexp-substitute/global #f var-ref-regexp str
+                                  'pre expand-var-ref 'post))
+      (define (lookup name)
+        (expand (assoc-ref config name)))
+      lookup))
+
+  (define (maybe-augment-load-paths!)
+    (unless (getenv "RCAS_WEB_UNINSTALLED")
+      (let ((module-dir (config-lookup "guilemoduledir")))
+        (push! module-dir %load-path)
+        (push! module-dir %load-compiled-path))))
+
+  (define (show-rcas-web-usage)
+    (format (current-error-port)
+            "
+    `rcas-web server': start the application web server.
+    `rcas-web worker': start a worker process (requires Redis).
+")
+    (exit 1))
+
+  (define (run-rcas-web . args)
+    (match args
+      (()
+       (format (current-error-port)
+               "rcas-web: missing command name")
+       (show-rcas-web-usage))
+      ((or ("-h") ("--help") ("help"))
+       (show-rcas-web-usage))
+      (("worker")
+       (use-modules (rcas utils worker))
+       (worker-loop))
+      (("server")
+       (use-modules (rcas web server)
+                    (rcas web controller))
+       (start-rcas-web controller))
+      (_ (display args))))
+
+  (maybe-augment-load-paths!)
+  (apply run-rcas-web (cdr (command-line))))

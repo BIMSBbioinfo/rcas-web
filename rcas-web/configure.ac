@@ -38,7 +38,8 @@ AC_CONFIG_FILES([Makefile])
 
 guilemoduledir="${datarootdir}/guile/site/${GUILE_EFFECTIVE_VERSION}"
 AC_SUBST([guilemoduledir])
-AC_CONFIG_FILES([scripts/rcas-web-server], [chmod +x scripts/rcas-web-server])
-AC_CONFIG_FILES([scripts/rcas-web-worker], [chmod +x scripts/rcas-web-worker])
+AC_CONFIG_FILES([scripts/rcas-web], [chmod +x scripts/rcas-web])
+AC_CONFIG_FILES([pre-inst-env:build-aux/pre-inst-env.in],
+  [chmod +x pre-inst-env])
 
 AC_OUTPUT
