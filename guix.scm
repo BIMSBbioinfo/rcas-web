@@ -21,7 +21,8 @@
              (gnu packages autotools)
              (gnu packages bioinformatics)
              (gnu packages statistics)
-             (gnu packages guile))
+             (gnu packages guile)
+             (gnu packages pkg-config))
 
 ;; The latest release of bedtools (version 2.25.0 as of this writing)
 ;; segfaults on intersect, so we need a more recent version.  We
@@ -149,7 +150,8 @@ provides intuitive reports and publication-ready graphics.")
        ("guile-redis" ,guile2.2-redis)))
     (native-inputs
      `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+       ("automake" ,automake)
+       ("pkg-config" ,pkg-config)))
     (synopsis "Web interface for RNA-centric annotation system (RCAS)")
     (license license:gpl3+)))
 
