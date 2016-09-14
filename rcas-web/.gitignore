@@ -1,0 +1,4 @@
+*.go
+scripts/rcas-web
+pre-inst-env
+.gitignore
