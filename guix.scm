@@ -139,9 +139,6 @@ provides intuitive reports and publication-ready graphics.")
       (home-page "https://github.com/BIMSBbioinfo/RCAS-tools")
       (license license:expat))))
 
-(define-public guile2.2-redis
-  ((@@ (gnu packages guile) package-for-guile-2.2) guile-redis))
-
 (define-public rcas-web
   (package (inherit rcas)
     (name "rcas-web")
