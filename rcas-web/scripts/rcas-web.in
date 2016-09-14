@@ -1,6 +1,6 @@
-#!@GUILE@ -s
+#!@GUILE@ --no-auto-compile
+-*- scheme -*-
 !#
-
 ;;; rcas-web - Web interface for RCAS
 ;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2013 Mark H Weaver <mhw@netris.org>
@@ -24,7 +24,6 @@
 ;;; Guix.
 
 (use-modules (ice-9 regex)
-             (ice-9 match)
              (srfi srfi-26))
 
 (let ()
@@ -51,30 +50,7 @@
         (push! module-dir %load-path)
         (push! module-dir %load-compiled-path))))
 
-  (define (show-rcas-web-usage)
-    (format (current-error-port)
-            "
-    `rcas-web server': start the application web server.
-    `rcas-web worker': start a worker process (requires Redis).
-")
-    (exit 1))
-
-  (define (run-rcas-web . args)
-    (match args
-      (()
-       (format (current-error-port)
-               "rcas-web: missing command name")
-       (show-rcas-web-usage))
-      ((or ("-h") ("--help") ("help"))
-       (show-rcas-web-usage))
-      (("worker")
-       (use-modules (rcas utils worker))
-       (worker-loop))
-      (("server")
-       (use-modules (rcas web server)
-                    (rcas web controller))
-       (start-rcas-web controller))
-      (_ (display args))))
-
   (maybe-augment-load-paths!)
-  (apply run-rcas-web (cdr (command-line))))
+  (let ((run-rcas-web (module-ref (resolve-interface '(rcas ui))
+                                  'run-rcas-web)))
+    (apply run-rcas-web (cdr (command-line)))))

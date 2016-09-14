@@ -33,11 +33,12 @@ AS_IF([test -z "$RSCRIPT"],
       [AC_PATH_PROG([RSCRIPT], [Rscript])],
       [AC_MSG_NOTICE([Using $RSCRIPT as Rscript executable.])])
 
-dnl Substitute placeholders to generate these target files
-AC_CONFIG_FILES([Makefile])
-
 guilemoduledir="${datarootdir}/guile/site/${GUILE_EFFECTIVE_VERSION}"
 AC_SUBST([guilemoduledir])
+AC_SUBST([GUILE_EFFECTIVE_VERSION])
+
+dnl Substitute placeholders to generate these target files
+AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([scripts/rcas-web], [chmod +x scripts/rcas-web])
 AC_CONFIG_FILES([pre-inst-env:build-aux/pre-inst-env.in],
   [chmod +x pre-inst-env])
