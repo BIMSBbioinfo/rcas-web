@@ -1,4 +1,4 @@
-#!/bin/guile -s
+#!@GUILE@ -s
 !#
 
 ;;; rcas-web - Web interface for RCAS
@@ -18,6 +18,6 @@
 ;;; License along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
 
-(use-modules (rcas web server)
-             (rcas web controller))
-(start-rcas-web controller)
+(set! %load-path (cons (getcwd) %load-path))
+(use-modules (rcas web worker))
+(worker-loop)

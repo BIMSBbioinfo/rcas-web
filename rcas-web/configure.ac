@@ -1,0 +1,44 @@
+dnl -*- Autoconf -*-
+
+AC_INIT([rcas-web], [0.0.0])
+AC_CONFIG_AUX_DIR([build-aux])
+AM_INIT_AUTOMAKE([gnu color-tests -Wall -Wno-portability foreign])
+AM_SILENT_RULES([yes])
+
+dnl We need Rscript to run RCAS jobs
+AC_ARG_VAR(RSCRIPT, override location of "Rscript" executable)
+
+dnl We require pkg.m4 (from pkg-config) and guile.m4 (from Guile.)
+dnl Make sure they are available.
+m4_pattern_forbid([PKG_CHECK_MODULES])
+m4_pattern_forbid([GUILE_MODULE_AVAILABLE])
+
+PKG_CHECK_MODULES([GUILE], [guile-2.2 >= 2.1.3])
+AC_PATH_PROG([GUILE], [guile])
+AC_PATH_PROG([GUILD], [guild])
+if test "x$GUILD" = "x"; then
+   AC_MSG_ERROR(['guild' binary not found; please check your guile-2.x installation.])
+fi
+
+GUILE_MODULE_AVAILABLE([have_guile_json], [(json)])
+AM_CONDITIONAL([HAVE_GUILE_JSON], [test "x$have_guile_json" = "xyes"])
+
+GUILE_MODULE_AVAILABLE([have_guile_redis], [(redis)])
+AM_CONDITIONAL([HAVE_GUILE_REDIS], [test "x$have_guile_redis" = "xyes"])
+
+dnl Check for required programmes and store their full path in the
+dnl given variables.  The variables are used to substitute
+dnl placeholders in the scripts.
+AS_IF([test -z "$RSCRIPT"],
+      [AC_PATH_PROG([RSCRIPT], [Rscript])],
+      [AC_MSG_NOTICE([Using $RSCRIPT as Rscript executable.])])
+
+dnl Substitute placeholders to generate these target files
+AC_CONFIG_FILES([Makefile])
+
+guilemoduledir="${datarootdir}/guile/site/${GUILE_EFFECTIVE_VERSION}"
+AC_SUBST([guilemoduledir])
+AC_CONFIG_FILES([scripts/rcas-web-server], [chmod +x scripts/rcas-web-server])
+AC_CONFIG_FILES([scripts/rcas-web-worker], [chmod +x scripts/rcas-web-worker])
+
+AC_OUTPUT

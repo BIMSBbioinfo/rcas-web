@@ -1,5 +1,4 @@
-#!/gnu/store/kqq37w4xnl1q21g6vz93qq1rdb2y7ayc-guile-next-2.1.3/bin/guile \
--s
+#!@GUILE@ -s
 !#
 
 ;;; rcas-web - Web interface for RCAS
@@ -19,6 +18,6 @@
 ;;; License along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
 
-(set! %load-path (cons (getcwd) %load-path))
-(use-modules (rcas web worker))
-(worker-loop)
+(use-modules (rcas web server)
+             (rcas web controller))
+(start-rcas-web controller)
