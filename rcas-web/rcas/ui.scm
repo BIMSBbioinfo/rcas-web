@@ -45,7 +45,7 @@
      (worker-loop))
     (("server" port ...)
      (let ((port (match port
-                   (()  rcas-web-port)
+                   (()  (assoc-ref %config 'port))
                    ((p) (string->number p)))))
        (format #t "Starting web server on port ~a\nCtrl-C to quit\n\n" port)
        (start-rcas-web port)))

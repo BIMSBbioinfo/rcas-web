@@ -72,9 +72,9 @@ output is redirected to log files."
   ;; file.  Also make sure that it is in the upload directory and
   ;; nowhere else.  Don't use the RAW-FILE-NAME directly!
   (let* ((file-name (basename raw-file-name))
-         (input     (string-append rcas-web-upload-dir "/"
+         (input     (string-append (assoc-ref %config 'upload-dir) "/"
                                    file-name))
-         (outdir    (string-append rcas-web-results-dir "/"
+         (outdir    (string-append (assoc-ref %config 'results-dir) "/"
                                    file-name)))
     (if (and (file-exists? input)
              (access? input R_OK))

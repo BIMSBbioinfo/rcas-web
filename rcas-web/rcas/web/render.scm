@@ -44,7 +44,7 @@
 
 ;; TODO: merge with render-static-asset
 (define (render-report id)
-  (let ((file-name (string-join (list rcas-web-results-dir id
+  (let ((file-name (string-join (list (assoc-ref %config 'results-dir) id
                                       (string-append id ".RCAS.report.html")) "/")))
     (if (and (file-exists? file-name)
              (not (directory? file-name)))
@@ -52,20 +52,21 @@
                                             (file-extension file-name))))
               (call-with-input-file file-name get-bytevector-all))
         (not-found (build-uri 'http
-                              #:host rcas-web-host
-                              #:port rcas-web-port
+                              #:host (assoc-ref %config 'host)
+                              #:port (assoc-ref %config 'port)
                               #:path (string-join id "/" 'prefix))))))
 
 (define (render-static-asset path)
-  (let ((file-name (string-join (cons* rcas-web-asset-dir path) "/")))
+  (let ((file-name (string-join (cons* (assoc-ref %config 'assets-dir)
+                                       path) "/")))
     (if (and (file-exists? file-name)
              (not (directory? file-name)))
         (list `((content-type . ,(assoc-ref file-mime-types
                                             (file-extension file-name))))
               (call-with-input-file file-name get-bytevector-all))
         (not-found (build-uri 'http
-                              #:host rcas-web-host
-                              #:port rcas-web-port
+                              #:host (assoc-ref %config 'host)
+                              #:port (assoc-ref %config 'port)
                               #:path (string-join path "/" 'prefix))))))
 
 (define (render-html sxml)
@@ -92,8 +93,8 @@
 
 (define (redirect path)
   (let ((uri (build-uri 'http
-                        #:host rcas-web-host
-                        #:port rcas-web-port
+                        #:host (assoc-ref %config 'host)
+                        #:port (assoc-ref %config 'port)
                         #:path (string-append
                                 "/" (encode-and-join-uri-path path)))))
     (list (build-response
