@@ -153,6 +153,6 @@ provides intuitive reports and publication-ready graphics.")
        ("automake" ,automake)
        ("pkg-config" ,pkg-config)))
     (synopsis "Web interface for RNA-centric annotation system (RCAS)")
-    (license license:gpl3+)))
+    (license license:agpl3+)))
 
 rcas-web
