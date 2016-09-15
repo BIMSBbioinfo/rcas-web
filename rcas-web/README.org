@@ -28,13 +28,6 @@ cd ~/dev/RCAS-tools
 guix environment --load=guix.scm
 #+END_SRC
 
-** Configuring RCAS web
-
-Currently, there isn’t much you can configure, and it’s not convenient
-to override settings.  A couple of things can be changed in
-=rcas/config.scm=, such as the default web server port.  A more
-convenient interface to override settings will be added at a later
-point.
 
 ** Building RCAS web
 
@@ -68,6 +61,54 @@ ${prefix}/bin/rcas-web worker &
 
 You can and should run a larger number of worker processes.
 Currently, one worker process runs exactly one job at a time.
+
+** Configuring RCAS web
+
+RCAS web comes with crude defaults that you probably want to change.
+The defaults are recorded in the =%config= value in the file
+=rcas/config.scm=.  You can override individual values or all of them
+by putting an association list (i.e. a list of key-value pairs)
+expression in a file and pointing =rcas-web= to the file with the
+=--config= option.
+
+Here’s an example for a configuration file:
+
+#+BEGIN_SRC scheme
+((assets-dir  . "/path/to/web/assets")
+ (upload-dir  . "/path/to/file/uploads")
+ (results-dir . "/where/to/store/reports")
+ (host        . "localhost")
+ (port        . 12345))
+#+END_SRC
+
+Assuming that this is stored as a file called =/tmp/rcas.conf= you can
+make =rcas-web= use it like this:
+
+#+BEGIN_SRC sh
+rcas-web --config=/tmp/rcas.conf [command]
+#+END_SRC
+
+The only configuration keys that you will probably need to override
+are “upload-dir” (for the directory where RCAS web will store uploaded
+BED files) and “results-dir” where RCAS web will store generated
+reports.
+
+The “port” key in the configuration file only overrides the *default*
+port on which the application web server will listen for HTTP
+requests.  Since you will probably want to start multiple web servers
+behind a reverse proxy like Nginx overriding the default is not very
+useful.  Instead you should pass an additional numeric argument to the
+“server” sub-command to set the port.  The following shell command
+will start ten web server instances on the ports 3001 to 3010
+(inclusive), redirect all output to separate log files, and record the
+pid of each web server process:
+
+#+BEGIN_SRC sh
+for port in $(seq 3001 3010); do
+  rcas-web server ${port} > rcas-web-${port}.log &
+  echo $! > rcas-web-${port}.pid
+done
+#+END_SRC
 
 ** License
 

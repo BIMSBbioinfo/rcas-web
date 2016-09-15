@@ -17,6 +17,7 @@
 
 (define-module (rcas ui)
   #:use-module (ice-9 match)
+  #:use-module (srfi srfi-1)
   #:use-module (rcas config)
   #:use-module (rcas web server)
   #:use-module (rcas utils worker)
@@ -33,8 +34,20 @@
 ")
   (exit 1))
 
+(define (maybe-override-config! args)
+  (let ((config-option (find (lambda (opt)
+                               (string-prefix? "--config=" opt))
+                             args)))
+    (if config-option
+        (let ((file (cadr (string-split config-option #\=))))
+          (when (file-exists? file)
+            (let ((newconfig (call-with-input-file file read)))
+              (set! %config (append newconfig %config))
+              (delete config-option args))))
+        args)))
+
 (define (run-rcas-web . args)
-  (match args
+  (match (maybe-override-config! args)
     (()
      (format (current-error-port)
              "rcas-web: missing command name\n")
