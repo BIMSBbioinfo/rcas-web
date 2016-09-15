@@ -24,7 +24,6 @@ Inside of this environment we create an environment needed to build
 and use the web interface.
 
 #+BEGIN_SRC sh
-cd ~/dev/RCAS-tools
 guix environment --load=guix.scm
 #+END_SRC
 
@@ -34,7 +33,6 @@ Now we’re ready to build the web interface.  RCAS web uses the common
 GNU build system.
 
 #+BEGIN_SRC sh
-cd rcas-web
 autoreconf -vif
 ./configure --prefix=/srv/rcas-web
 make
