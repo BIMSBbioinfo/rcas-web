@@ -28,7 +28,6 @@ cd ~/dev/RCAS-tools
 guix environment --load=guix.scm
 #+END_SRC
 
-
 ** Building RCAS web
 
 Now we’re ready to build the web interface.  RCAS web uses the common
