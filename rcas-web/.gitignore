@@ -1,4 +1,5 @@
 *.go
 scripts/rcas-web
+rcas/config.scm
 pre-inst-env
 .gitignore

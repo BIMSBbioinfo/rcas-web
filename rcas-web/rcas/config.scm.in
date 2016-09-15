@@ -30,4 +30,4 @@
 (define rcas-web-host "localhost")
 (define rcas-web-port 8080)
 
-(define %Rscript "Rscript")
+(define %Rscript "@RSCRIPT@")
