@@ -47,8 +47,9 @@ using the “pre-inst-env” script, e.g. to start the web server:
 ./pre-inst-env scripts/rcas-web --config=rcas.conf server
 #+END_SRC
 
-Note that when using =pre-inst-env= you will need to configure the
-“assets-dir” by modifying the example configuration file.
+Note that when using =pre-inst-env= outside of the “rcas-web”
+directory you will need to configure the “assets-dir” by modifying the
+example configuration file.
 
 ** Installing RCAS web
 
