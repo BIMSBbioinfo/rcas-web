@@ -5,9 +5,11 @@ config.log
 config.status
 aclocal.m4
 build-aux/
-src/generate_report.sh
-src/RCAS
-src/run.rcas.R.in
-src/base/header.html
 autom4te.cache/
 *~
+*.go
+scripts/rcas-web
+rcas/config.scm
+rcas.conf.example
+pre-inst-env
+.gitignore
