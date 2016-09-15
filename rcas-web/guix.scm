@@ -1,12 +1,12 @@
-;;; RCAS -- standalone RNA centric annotation system
+;;; rcas-web - Web interface for RCAS
 ;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;;
-;;; This file is part of RCAS.
+;;; This file is part of rcas-web.
 ;;;
-;;; RCAS is free software; see LICENSE file for details.
+;;; rcas-web is free software; see COPYING file for details.
 
 ;;; Run the following command to enter a development environment for
-;;; RCAS:
+;;; RCAS web:
 ;;;
 ;;;  $ guix environment -l guix.scm
 
@@ -140,4 +140,19 @@ provides intuitive reports and publication-ready graphics.")
       (home-page "https://github.com/BIMSBbioinfo/RCAS-tools")
       (license license:expat))))
 
-rcas
+(define-public rcas-web
+  (package (inherit rcas)
+    (name "rcas-web")
+    (version "0.0.0")
+    (inputs
+     `(("guile-next" ,guile-next)
+       ("guile-json" ,guile2.2-json)
+       ("guile-redis" ,guile2.2-redis)))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("pkg-config" ,pkg-config)))
+    (synopsis "Web interface for RNA-centric annotation system (RCAS)")
+    (license license:gpl3+)))
+
+rcas-web
