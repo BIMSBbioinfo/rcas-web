@@ -1,62 +1,73 @@
-# RCAS -- standalone RNA centric annotation system
+# rcas-web - Web interface for RCAS
 # Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
 #
-# This file is part of RCAS.
+# This file is part of rcas-web.
 #
-# RCAS is free software; see LICENSE file for details.
+# rcas-web is free software; see LICENSE file for details.
 
-bin_SCRIPTS =					\
-  src/RCAS
+SCMGOBJECTS = $(filter %.scm, $(SSOURCES))
+SOURCES     = $(SCMGOBJECTS)
+GOBJECTS    = $(SCMGOBJECTS:%.scm=%.go)
 
-dist_libexec_SCRIPTS =				\
-  src/rcas.Rmd					\
-  src/rcas.msigdb.R				\
-  src/rcas.GO.R					\
-  src/rcas.motif.R				\
-  src/map_msigdb_orthologs.R
+nobase_mod_DATA = $(SOURCES) $(NOCOMP_SOURCES)
+nobase_go_DATA = $(GOBJECTS)
 
-basedir = $(datadir)/RCAS/base
-dist_base_DATA = 				\
-  src/base/c2.cp.v5.0.entrez.ce6.gmt		\
-  src/base/c2.cp.v5.0.entrez.dm3.gmt		\
-  src/base/c2.cp.v5.0.entrez.hg19.gmt		\
-  src/base/c2.cp.v5.0.entrez.mm9.gmt		\
-  src/base/header.html				\
-  src/base/custom.css				\
-  src/base/Caenorhabditis_elegans-U2T.meme	\
-  src/base/Drosophila_melanogaster-U2T.meme	\
-  src/base/Homo_sapiens-U2T.meme		\
-  src/base/Mus_musculus-U2T.meme
+# Make sure source files are installed first, so that the mtime of
+# installed compiled files is greater than that of installed source
+# files.  See
+# <http://lists.gnu.org/archive/html/guile-devel/2010-07/msg00125.html>
+# for details.
+guile_install_go_files = install-nobase_goDATA
+$(guile_install_go_files): install-nobase_modDATA
 
-baseimgdir = $(basedir)/img
-dist_baseimg_DATA = src/base/img/**
+CLEANFILES = $(GOBJECTS)
+EXTRA_DIST = $(SOURCES) $(NOCOMP_SOURCES)
+GUILE_WARNINGS = -Wunbound-variable -Warity-mismatch -Wformat
+SUFFIXES = .scm .go
 
-dist_doc_DATA =					\
-  README.md
+.scm.go:
+	$(AM_V_GEN)$(top_builddir)/pre-inst-env $(GUILE_TOOLS) compile $(GUILE_WARNINGS) -o "$@" "$<"
 
-# This is a hack to let the Python wrapper and thus snakemake know
-# where the base files and all other libexec scripts are located.  All
-# internal scripts called by snakemake rules and all snakefile parts
-# are located in libexecdir.
-src/RCAS: src/run.rcas.R.in
-	sed -e "s|#:MAKE|\nbindir = \"$(bindir)\"\nlibexecdir = \"$(libexecdir)\"\nbasedir = \"$(basedir)\"|" -i $<
-	mv $< $@
 
-# Pandoc expects images to be relative to the current working
-# directory when "--standalone" is provided.  Instead of hacking
-# around this behaviour (by changing the working directory at runtime)
-# we just patch in the full path to the basedir.
+bin_SCRIPTS =						\
+  scripts/rcas-web
 
-# Since this Makefile.am is processed by the configure script, we
-# should not use "@basedir@" here, as that would be replaced with the
-# actual path, leading to a very pointless "sed" command.
-src/base/header.html: src/base/header.html.in
-	sed -e "s|@basedir|$(basedir)|" $< > $@
+moddir = $(prefix)/share/guile/site/$(GUILE_EFFECTIVE_VERSION)
+godir  = $(moddir)
+assetsdir = $(datadir)/@PACKAGE@
 
-all-local:
-	@echo -e "\n\nRCAS has successfully been built."
+nobase_dist_assets_DATA = \
+  assets/css/reset.css											\
+  assets/css/screen.css											\
+  assets/fine-uploader/loading.gif								\
+  assets/fine-uploader/placeholders/not_available-generic.png	\
+  assets/fine-uploader/placeholders/waiting-generic.png			\
+  assets/fine-uploader/dnd.js									\
+  assets/fine-uploader/edit.gif									\
+  assets/fine-uploader/fine-uploader.js							\
+  assets/fine-uploader/processing.gif							\
+  assets/fine-uploader/fine-uploader.css						\
+  assets/fine-uploader/trash.gif								\
+  assets/fine-uploader/pause.gif								\
+  assets/fine-uploader/continue.gif								\
+  assets/fine-uploader/fine-uploader-new.css					\
+  assets/fine-uploader/retry.gif								\
+  assets/js/init-fine-uploader.js
 
-install: install-am
-	@echo -e "\n\nRCAS has successfully been installed."
-
-CLEANFILES = src/base/header.html src/RCAS
+SSOURCES =							\
+  rcas/ui.scm						\
+  rcas/utils/worker.scm				\
+  rcas/utils/r.scm					\
+  rcas/utils/report.scm				\
+  rcas/utils/jobs.scm				\
+  rcas/web/controller/upload.scm	\
+  rcas/web/controller/result.scm	\
+  rcas/web/render.scm				\
+  rcas/web/view/html.scm			\
+  rcas/web/controller.scm			\
+  rcas/web/util.scm					\
+  rcas/web/server.scm				\
+  rcas/web/bytevectors.scm			\
+  rcas/web/sxml.scm					\
+  rcas/web/multipart.scm			\
+  rcas/config.scm
