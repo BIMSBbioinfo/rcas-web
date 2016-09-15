@@ -17,6 +17,7 @@
 
 (define-module (rcas ui)
   #:use-module (ice-9 match)
+  #:use-module (rcas config)
   #:use-module (rcas web server)
   #:use-module (rcas utils worker)
   #:export (run-rcas-web))
@@ -24,8 +25,11 @@
 (define (show-rcas-web-usage)
   (format (current-error-port)
           "
-    `rcas-web server': start the application web server.
-    `rcas-web worker': start a worker process (requires Redis).
+    `rcas-web server [port]':
+         start the application web server on port PORT or 8080 if omitted.
+
+    `rcas-web worker':
+         start a worker process (requires Redis).
 ")
   (exit 1))
 
@@ -33,13 +37,17 @@
   (match args
     (()
      (format (current-error-port)
-             "rcas-web: missing command name")
+             "rcas-web: missing command name\n")
      (show-rcas-web-usage))
     ((or ("-h") ("--help") ("help"))
      (show-rcas-web-usage))
     (("worker")
      (worker-loop))
-    (("server")
-     (start-rcas-web))
+    (("server" port ...)
+     (let ((port (match port
+                   (()  rcas-web-port)
+                   ((p) (string->number p)))))
+       (format #t "Starting web server on port ~a\nCtrl-C to quit\n\n" port)
+       (start-rcas-web port)))
     (_  (format (current-error-port)
                 "rcas-web: unknown command ~a\n" args))))

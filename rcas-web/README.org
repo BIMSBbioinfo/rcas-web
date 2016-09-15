@@ -32,9 +32,9 @@ guix environment --load=guix.scm
 
 Currently, there isn’t much you can configure, and it’s not convenient
 to override settings.  A couple of things can be changed in
-=rcas/config.scm= but at the moment you cannot even modify the port on
-which the web interface listens for HTTP requests.  This will be
-changed eventually.
+=rcas/config.scm=, such as the default web server port.  A more
+convenient interface to override settings will be added at a later
+point.
 
 ** Building RCAS web
 

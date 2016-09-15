@@ -23,7 +23,6 @@
   #:use-module (web request)
   #:use-module (web server)
   #:use-module (web uri)
-  #:use-module (rcas config)
   #:use-module (rcas web controller)
   #:use-module (rcas web render)
   #:use-module (rcas web util)
@@ -43,9 +42,9 @@
           (run-controller controller request body)
           (list controller))))
 
-(define (start-rcas-web)
+(define (start-rcas-web port)
   (run-server (lambda args (apply handler args))
               'http
               `(#:addr ,INADDR_ANY
-                #:port ,rcas-web-port)
+                #:port ,port)
               controller))
