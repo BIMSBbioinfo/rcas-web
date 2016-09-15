@@ -26,10 +26,10 @@
 (define (show-rcas-web-usage)
   (format (current-error-port)
           "
-    `rcas-web server [port]':
+    `rcas-web [--config=rcas.conf] server [port]':
          start the application web server on port PORT or 8080 if omitted.
 
-    `rcas-web worker':
+    `rcas-web [--config=rcas.conf] worker':
          start a worker process (requires Redis).
 ")
   (exit 1))
