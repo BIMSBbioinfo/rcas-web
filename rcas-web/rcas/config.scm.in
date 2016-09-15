@@ -20,9 +20,16 @@
             %Rscript))
 
 (define %config
-  `((assets-dir  . ,(string-append (getcwd) "/assets"))
-    (upload-dir  . "/tmp/rcas-uploads")
-    (results-dir . "/tmp/rcas-results")
+  ;; Try to find the "assets" directory relative to the executable
+  ;; first.  This is useful when using "pre-inst-env".
+  `((assets-dir  . ,(let ((maybe-dir
+                           (string-append (getcwd) "/assets")))
+                      (if (and (getenv "RCAS_WEB_UNINSTALLED")
+                               (file-exists? maybe-dir))
+                          maybe-dir
+                          "@prefix@/share/rcas-web/assets")))
+    (upload-dir  . "/srv/rcas-web/uploads")
+    (results-dir . "/srv/rcas-web/results")
     (host        . "localhost")
     (port        . 8080)))
 
