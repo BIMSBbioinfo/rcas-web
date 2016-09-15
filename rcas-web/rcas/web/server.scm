@@ -24,6 +24,7 @@
   #:use-module (web server)
   #:use-module (web uri)
   #:use-module (rcas config)
+  #:use-module (rcas web controller)
   #:use-module (rcas web render)
   #:use-module (rcas web util)
   #:export (start-rcas-web))
@@ -42,7 +43,7 @@
           (run-controller controller request body)
           (list controller))))
 
-(define (start-rcas-web controller)
+(define (start-rcas-web)
   (run-server (lambda args (apply handler args))
               'http
               `(#:addr ,INADDR_ANY

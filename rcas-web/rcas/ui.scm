@@ -18,7 +18,6 @@
 (define-module (rcas ui)
   #:use-module (ice-9 match)
   #:use-module (rcas web server)
-  #:use-module (rcas web controller)
   #:use-module (rcas utils worker)
   #:export (run-rcas-web))
 
@@ -41,6 +40,6 @@
     (("worker")
      (worker-loop))
     (("server")
-     (start-rcas-web controller))
+     (start-rcas-web))
     (_  (format (current-error-port)
                 "rcas-web: unknown command ~a\n" args))))
