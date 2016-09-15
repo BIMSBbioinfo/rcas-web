@@ -34,6 +34,24 @@ bin_SCRIPTS =						\
 
 moddir = $(prefix)/share/guile/site/$(GUILE_EFFECTIVE_VERSION)
 godir  = $(moddir)
+assetsdir = $(datadir)/@PACKAGE@
+
+nobase_dist_assets_DATA = \
+  assets/css/reset.css											\
+  assets/fine-uploader/loading.gif								\
+  assets/fine-uploader/placeholders/not_available-generic.png	\
+  assets/fine-uploader/placeholders/waiting-generic.png			\
+  assets/fine-uploader/dnd.js									\
+  assets/fine-uploader/edit.gif									\
+  assets/fine-uploader/fine-uploader.js							\
+  assets/fine-uploader/processing.gif							\
+  assets/fine-uploader/fine-uploader.css						\
+  assets/fine-uploader/trash.gif								\
+  assets/fine-uploader/pause.gif								\
+  assets/fine-uploader/continue.gif								\
+  assets/fine-uploader/fine-uploader-new.css					\
+  assets/fine-uploader/retry.gif								\
+  assets/js/init-fine-uploader.js
 
 SSOURCES =							\
   rcas/ui.scm						\
