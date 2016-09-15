@@ -88,6 +88,9 @@ make =rcas-web= use it like this:
 rcas-web --config=/tmp/rcas.conf [command]
 #+END_SRC
 
+An example configuration file =rcas.conf.example= is also created by
+the configure script.
+
 The only configuration keys that you will probably need to override
 are “upload-dir” (for the directory where RCAS web will store uploaded
 BED files) and “results-dir” where RCAS web will store generated

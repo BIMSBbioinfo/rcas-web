@@ -40,6 +40,7 @@ AC_SUBST([GUILE_EFFECTIVE_VERSION])
 dnl Substitute placeholders to generate these target files
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([rcas/config.scm])
+AC_CONFIG_FILES([rcas.conf.example])
 AC_CONFIG_FILES([scripts/rcas-web], [chmod +x scripts/rcas-web])
 AC_CONFIG_FILES([pre-inst-env:build-aux/pre-inst-env.in],
   [chmod +x pre-inst-env])
