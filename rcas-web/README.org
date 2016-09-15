@@ -45,8 +45,11 @@ At this point you can already use RCAS web—without installing it—by
 using the “pre-inst-env” script, e.g. to start the web server:
 
 #+BEGIN_SRC sh
-./pre-inst-env scripts/rcas-web server
+./pre-inst-env scripts/rcas-web --config=rcas.conf server
 #+END_SRC
+
+Note that when using =pre-inst-env= you will need to configure the
+“assets-dir” by modifying the example configuration file.
 
 ** Installing RCAS web
 
@@ -55,8 +58,8 @@ Alternatively, you can install RCAS web by running =make install= as root.
 To start the application web server and the worker process(es) do this:
 
 #+BEGIN_SRC sh
-${prefix}/bin/rcas-web server &
-${prefix}/bin/rcas-web worker &
+${prefix}/bin/rcas-web --config=rcas.conf server &
+${prefix}/bin/rcas-web --config=rcas.conf worker &
 #+END_SRC
 
 You can and should run a larger number of worker processes.
@@ -81,11 +84,11 @@ Here’s an example for a configuration file:
  (port        . 12345))
 #+END_SRC
 
-Assuming that this is stored as a file called =/tmp/rcas.conf= you can
-make =rcas-web= use it like this:
+Assuming that this is stored as a file called =rcas.conf= you can make
+=rcas-web= use it like this:
 
 #+BEGIN_SRC sh
-rcas-web --config=/tmp/rcas.conf [command]
+rcas-web --config=rcas.conf [command]
 #+END_SRC
 
 An example configuration file =rcas.conf.example= is also created by
@@ -108,7 +111,7 @@ pid of each web server process:
 
 #+BEGIN_SRC sh
 for port in $(seq 3001 3010); do
-  rcas-web server ${port} > rcas-web-${port}.log &
+  rcas-web --config=rcas.conf server ${port} > rcas-web-${port}.log &
   echo $! > rcas-web-${port}.pid
 done
 #+END_SRC
