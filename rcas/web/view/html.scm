@@ -116,7 +116,7 @@
         (div (@ (class "container"))
              (a (@ (href "/"))
                 (h1 "RCAS"
-                    (small "Really Cool Automagic Software")))
+                    (small "RNA Centric Annotation System")))
              ,body)))
 
 (define index
