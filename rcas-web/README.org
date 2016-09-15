@@ -17,7 +17,7 @@ environment in which RCAS itself is available.
 You can achieve this by running the following commands:
 
 #+BEGIN_SRC sh
-guix environment --ad-hoc redis r-rcas
+guix environment --ad-hoc redis r r-rcas
 #+END_SRC
 
 Inside of this environment we create an environment needed to build
