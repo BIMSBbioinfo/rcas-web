@@ -16,9 +16,28 @@
 ;;; <http://www.gnu.org/licenses/>.
 
 (define-module (rcas web controller result)
+  #:use-module (srfi srfi-11)
+  #:use-module (ice-9 match)
   #:use-module (rcas utils jobs)
   #:use-module (rcas web view html)
   #:export (result-handler))
+
+(define (split-status status)
+  (match-let* (((status time) (string-split status #\:))
+               (secs (- (current-time) (string->number time)))
+               (ago (cond
+                     ((< secs 60)
+                      (format #f "~a second~:p" secs))
+                     ((< secs (* 60 60))
+                      (format #f "~a minute~:p"
+                              (quotient secs 60)))
+                     ((< secs (* 60 60 24))
+                      (format #f "~a hour~:p"
+                              (quotient secs (* 60 60))))
+                     (else
+                      (format #f "~a day~:p"
+                              (quotient secs (* 60 60 24)))))))
+    (values status ago)))
 
 (define (result-handler id)
   (let ((status (get-status id))
@@ -26,11 +45,14 @@
     (cond
      ((null? status)
       (invalid-result id))
-     ((string-prefix? "waiting" status)
-      (result-page id status #f #t))
-     ((string-prefix? "processing" status)
-      (result-page id status #f #t))
-     ((string-prefix? "success" status)
-      (result-page id status result #f))
-     ((string-prefix? "failed" status)
-      (result-page id status result #f)))))
+     (else
+      (let-values (((status ago) (split-status status)))
+        (case (string->symbol status)
+          ((waiting)
+           (result-page id status ago #f #t))
+          ((processing)
+           (result-page id status ago #f #t))
+          ((success)
+           (result-page id status ago result #f))
+          ((failed)
+           (result-page id status ago result #f))))))))

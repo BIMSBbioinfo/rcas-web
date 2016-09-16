@@ -196,44 +196,29 @@
       (@ (type "text/javascript")
          (src "js/init-fine-uploader.js"))))))
 
-(define (result-page id status result refresh?)
-  (match-let* (((status time)
-                (string-split status #\:))
-               (secs-ago (- (current-time) (string->number time)))
-               (ago (cond
-                     ((< secs-ago 60)
-                      (format #f "~a seconds" secs-ago))
-                     ((< secs-ago (* 60 60))
-                      (format #f "~a minutes"
-                              (quotient secs-ago 60)))
-                     ((< secs-ago (* 60 60 24))
-                      (format #f "~a hours"
-                              (quotient secs-ago (* 60 60))))
-                     (else
-                      (format #f "~a days"
-                              (quotient secs-ago (* 60 60 24)))))))
-    (layout
-     #:head
-     (if refresh?
-         `((meta (@ (http-equiv "refresh")
-                    (content ,(string-append "30; URL=/result/" id)))))
-         '())
-     #:body
-     `(,(jumbotron
-         `(p "Results page for file "
-             (strong ,id)))
-       (div (@ (class "container"))
-            (p (strong "Status: ")
-               ,(format #f "~a (since ~a)" status ago))
-            ,(if (string-prefix? "success" status)
-                 `(p (a (@ (href ,(string-append "/result/"
-                                                 id "/report")))
-                        "Access the RCAS report here."))
-                 '())
-            ,(if refresh?
-                 '(p "This page will try to refresh in 30 seconds.")
-                 '(p (a (@ (href "/"))
-                        "How about running RCAS on another file?"))))))))
+(define (result-page id status ago result refresh?)
+  (layout
+   #:head
+   (if refresh?
+       `((meta (@ (http-equiv "refresh")
+                  (content ,(string-append "30; URL=/result/" id)))))
+       '())
+   #:body
+   `(,(jumbotron
+       `(p "Results page for file "
+           (strong ,id)))
+     (div (@ (class "container"))
+          (p (strong "Status: ")
+             ,(format #f "~a (since ~a)" status ago))
+          ,(if (string-prefix? "success" status)
+               `(p (a (@ (href ,(string-append "/result/"
+                                               id "/report")))
+                      "Access the RCAS report here."))
+               '())
+          ,(if refresh?
+               '(p "This page will try to refresh in 30 seconds.")
+               '(p (a (@ (href "/"))
+                      "How about running RCAS on another file?")))))))
 
 (define (invalid-result id)
   (layout
