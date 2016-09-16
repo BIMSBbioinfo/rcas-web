@@ -34,7 +34,7 @@
     (msigdbAnalysis       . boolean)
     (motifAnalysis        . boolean)
     (genomeVersion        . string)
-    (printProcessedTables . string)
+    ;;(printProcessedTables . boolean)
     (sampleN              . number)))
 
 (define permitted-report-options (map car valid-fields))
