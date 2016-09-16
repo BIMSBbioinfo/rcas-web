@@ -17,6 +17,11 @@ h1 small {
     font-size: 45%;
 }
 
+h2 {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
 .jumbotron {
     background-color: #fefefe;
     border-bottom: 2px solid #ddd;
@@ -56,4 +61,13 @@ form {
 
 label {
     text-align: right;
+}
+
+th {
+    padding-right: 1em;
+}
+td {
+    border-left: 1px solid #eee;
+    padding-left: 1em;
+    font-style: italic;
 }
