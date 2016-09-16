@@ -45,13 +45,16 @@
 (define (log-for id type)
   (let* ((out  (string-append (assoc-ref %config 'results-dir) "/" id))
          (file (string-append out "/R" (symbol->string type) ".log"))
-         (max  2048))
+         (buffer-size 2048))
     (if (file-exists? file)
-        ;; get the last MAX bytes
+        ;; get the last BUFFER-SIZE bytes
         (with-input-from-file file
           (lambda ()
-            (seek (current-input-port) (- max) SEEK_END)
-            (read-string (current-input-port) max)))
+            (seek (current-input-port) 0 SEEK_END)
+            (let ((maxoffset (min (ftell (current-input-port))
+                                  buffer-size)))
+              (seek (current-input-port) (- maxoffset) SEEK_END)
+              (read-string (current-input-port) maxoffset))))
         #f)))
 
 (define (result-handler id)
