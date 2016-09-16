@@ -36,3 +36,24 @@ h1 small {
 #errors, #output {
     display: none;
 }
+
+#about {
+    padding-bottom: 2rem;
+}
+
+.form-control, .btn {
+    font-size: inherit;
+    height: auto;
+}
+
+p {
+    max-width: 42em;
+}
+
+form {
+    padding-bottom: 2em;
+}
+
+label {
+    text-align: right;
+}
