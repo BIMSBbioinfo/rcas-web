@@ -165,8 +165,8 @@
                      (div (@ (class "checkbox"))
                           (label
                            (input (@ (type "checkbox")
-                                     (id   "annotation-summaries")
-                                     (name "annotation-summaries")))
+                                     (id   "annotation-summary")
+                                     (name "annotation-summary")))
                            "Provide annotation summaries from overlap operations"))
                      (div (@ (class "checkbox"))
                           (label
