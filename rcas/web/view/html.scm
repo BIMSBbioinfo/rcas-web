@@ -16,7 +16,6 @@
 ;;; <http://www.gnu.org/licenses/>.
 
 (define-module (rcas web view html)
-  #:use-module (ice-9 match)
   #:export (index
             result-page
             invalid-result))
