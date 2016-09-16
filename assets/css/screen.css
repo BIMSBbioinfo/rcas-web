@@ -1,3 +1,13 @@
+@font-face {
+  font-family: 'linlibertine';
+  src: url('/webfonts/LinLibertine_R.woff') format('woff');
+}
+
+body {
+    font-family: 'linlibertine';
+    font-size: 20px;
+}
+
 h1 {
     font-weight: bold;
 }

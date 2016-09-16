@@ -40,6 +40,7 @@
     ("js"  . (text/javascript))
     ("png" . (image/png))
     ("gif" . (image/gif))
+    ("woff" . (application/font-woff))
     ("html" . (text/html))))
 
 ;; TODO: merge with render-static-asset
