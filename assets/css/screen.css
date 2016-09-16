@@ -28,6 +28,14 @@ h2 {
     background-image: linear-gradient(0deg,#efefef 0,#fefefe 100%)
 }
 
+.jumbotron a,
+.jumbotron a:focus,
+.jumbotron a:hover {
+    color: black;
+    border: none;
+    text-decoration: none;
+}
+
 .qq-uploader {
     width: auto;
     overflow-x: hidden;
