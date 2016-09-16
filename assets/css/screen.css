@@ -22,3 +22,7 @@ h1 small {
     background-color: inherit;
     padding: 0;
 }
+
+#errors, #output {
+    display: none;
+}

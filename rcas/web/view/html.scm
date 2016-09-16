@@ -31,6 +31,9 @@
       (meta (@ (name "author") (content "Ricardo Wurmus")))
       (meta (@ (name "viewport")
                (content "width=device-width, initial-scale=1")))
+      (script
+       (@ (type "text/javascript")
+          (src "/js/rcas.js")))
       (link
        (@ (rel "stylesheet")
           (media "screen")
@@ -219,10 +222,16 @@
                '())
           ,@(when output
               `((h2 "Output")
-                (pre ,output)))
+                (p (a (@ (href "javascript:;")
+                         (onclick "RCAS.toggleLog('output')"))
+                      "Click to toggle."))
+                (pre (@ (id "output")) ,output)))
           ,@(when errors
               `((h2 "Errors and warnings")
-                (pre ,errors)))
+                (p (a (@ (href "javascript:;")
+                         (onclick "RCAS.toggleLog('errors')"))
+                      "Click to toggle."))
+                (pre (@ (id "errors")) ,errors)))
           ,(if refresh?
                '(p "This page will try to refresh in 30 seconds.")
                '(p (a (@ (href "/"))
