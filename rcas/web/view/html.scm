@@ -196,7 +196,7 @@
       (@ (type "text/javascript")
          (src "js/init-fine-uploader.js"))))))
 
-(define (result-page id status ago result refresh?)
+(define (result-page id status ago options errors output result refresh?)
   (layout
    #:head
    (if refresh?
@@ -208,6 +208,8 @@
        `(p "Results page for file "
            (strong ,id)))
      (div (@ (class "container"))
+          (p (strong "Options: ")
+             ,(format #f "~a" options))
           (p (strong "Status: ")
              ,(format #f "~a (since ~a)" status ago))
           ,(if (string-prefix? "success" status)
@@ -215,6 +217,12 @@
                                                id "/report")))
                       "Access the RCAS report here."))
                '())
+          ,@(when output
+              `((h2 "Output")
+                (pre ,output)))
+          ,@(when errors
+              `((h2 "Errors and warnings")
+                (pre ,errors)))
           ,(if refresh?
                '(p "This page will try to refresh in 30 seconds.")
                '(p (a (@ (href "/"))
