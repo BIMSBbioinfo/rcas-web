@@ -26,15 +26,15 @@
 (define valid-fields
   '(;;queryFilePath <-- always ignore!
     ;;outDir        <-- always ignore!
-    (gffFilePath . string)
-    (msigdbFilePath . string)
-    (annotationSummary . string)
-    (goAnalysis . boolean)
-    (msigdbAnalysis . boolean)
-    (motifAnalysis . boolean)
-    (genomeVersion . string)
+    ;;(gffFilePath          . string)
+    ;;(msigdbFilePath       . string)
+    (annotationSummary    . boolean)
+    (goAnalysis           . boolean)
+    (msigdbAnalysis       . boolean)
+    (motifAnalysis        . boolean)
+    (genomeVersion        . string)
     (printProcessedTables . string)
-    (sampleN . number)))
+    (sampleN              . number)))
 
 (define permitted-report-options (map car valid-fields))
 
