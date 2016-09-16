@@ -133,10 +133,22 @@
          (type "text/css")
          (href "fine-uploader/fine-uploader-new.css"))))
    #:body
-   `(,(jumbotron
-       '(p "There should be some text, explaining how this all works."))
+   `(,(jumbotron)
      (div (@ (class "container"))
-          (form (@ (id "qq-form"))
+          (div (@ (id "about")
+                  (class "row"))
+           (p "RCAS facilitates biological discovery from target
+regions located by methods such as Clip-Seq.  RCAS automatically
+provides dynamic annotations for custom input files that contain
+transcriptomic target regions.")
+           (p "Provided with target regions in BED format, RCAS
+automatically summarizes annotated features that overlap with targets,
+and performs enrichment analysis of motifs, Gene Ontology (GO) terms
+and gene set.  The final report of RCAS consists of high-quality
+dynamic figures and tables, which are readily applicable for
+publications or other academic usage."))
+          (form (@ (id "qq-form")
+                   (class "row"))
            (div (@ (class "form-group row"))
                 (label (@ (class "col-md-2 control-label"))
                        "BED file to analyze")
