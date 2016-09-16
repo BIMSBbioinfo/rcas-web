@@ -21,6 +21,7 @@
   #:use-module (ice-9 rdelim)
   #:use-module (rcas config)
   #:use-module (rcas utils jobs)
+  #:use-module (rcas utils report)
   #:use-module (rcas web view html)
   #:export (result-handler))
 
@@ -54,16 +55,16 @@
         #f)))
 
 (define (result-handler id)
-  (let ((status  (get-status id))
-        (result  (get-result id))
-        (options (get-options id)))
+  (let ((status (get-status id)) )
     (cond
      ((null? status)
       (invalid-result id))
      (else
       (let-values (((status ago) (split-status status))
                    (errors       (log-for id 'err))
-                   (output       (log-for id 'out)))
+                   (output       (log-for id 'out))
+                   (result       (get-result id))
+                   (options      (options-as-table (get-options id))))
         (case (string->symbol status)
           ((waiting)
            (result-page id status ago options errors output #f #t))

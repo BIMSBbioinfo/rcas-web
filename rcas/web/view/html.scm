@@ -223,8 +223,7 @@ publications or other academic usage."))
        `(p "Results page for file "
            (strong ,id)))
      (div (@ (class "container"))
-          (p (strong "Options: ")
-             ,(format #f "~a" options))
+          (h2 "Details")
           (p (strong "Status: ")
              ,(format #f "~a (since ~a)" status ago))
           ,(if (string-prefix? "success" status)
@@ -232,6 +231,7 @@ publications or other academic usage."))
                                                id "/report")))
                       "Access the RCAS report here."))
                '())
+          ,options
           ,@(when output
               `((h2 "Output")
                 (p (a (@ (href "javascript:;")

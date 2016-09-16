@@ -21,7 +21,8 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 iconv)
   #:export (sanitize-report-options
-            report-form-options->options))
+            report-form-options->options
+            options-as-table))
 
 (define valid-fields
   '(;;queryFilePath <-- always ignore!
@@ -76,3 +77,28 @@ in R, i.e. to from hyphenated lowercase to camelCase."
                                          (string-split name #\-))
                                     "")
                        0 1)))
+
+(define (prettify-options options)
+  (map (match-lambda
+         (('annotationSummary . value)
+          (cons "Provide annotation summaries from overlap operations"
+                (if value "yes" "no")))
+         (('goAnalysis . value)
+          (cons "Run GO term enrichment analysis"
+                (if value "yes" "no")))
+         (('msigdbAnalysis . value)
+          (cons "Run gene set enrichment analysis"
+                (if value "yes" "no")))
+         (('motifAnalysis . value)
+          (cons "Run motif analysis"
+                (if value "yes" "no")))
+         (('genomeVersion . genome)
+          (cons "Genome version" genome)))
+       (call-with-input-string options read)))
+
+(define (options-as-table options-string)
+  `(table ,@(map (match-lambda
+                   ((label . value)
+                    `(tr (th ,label)
+                         (td ,value))))
+                 (prettify-options options-string))))
