@@ -114,7 +114,7 @@
                                  (class "qq-ok-button-selector"))
                               "Okay"))))))
 
-(define (jumbotron body)
+(define* (jumbotron #:optional (body '()))
   `(div (@ (class "jumbotron"))
         (div (@ (class "container"))
              (a (@ (href "/"))
