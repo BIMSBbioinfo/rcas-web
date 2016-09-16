@@ -14,14 +14,30 @@ The easiest way to set up the RCAS web interface is to use GNU Guix.
 We need the Redis server to be running and we need to be in an
 environment in which RCAS itself is available.
 
-You can achieve this by running the following commands:
+Since neither RCAS nor the web interface are available in Guix
+upstream at this point, we provide package expressions for the two
+packages as part of the [[http://github.com/BIMSBbioinfo/guix-bimsb][Guix BIMSB]] repository.  Follow the
+instructions there to enable our custom package definitions.
+
+Once that’s done you can easily create an environment in which all
+required external dependencies are available with this command:
 
 #+BEGIN_SRC sh
-guix environment --ad-hoc redis r r-rcas
+guix environment --ad-hoc redis r-rcas
 #+END_SRC
 
-Inside of this environment we create an environment needed to build
-and use the web interface.
+The Guix BIMSB repository contains a package definition for
+“rcas-web”, so you could just install it into your default profile by
+running:
+
+#+BEGIN_SRC sh
+guix package -i rcas-web
+#+END_SRC
+
+If you rather want to build RCAS manually we suggest you use Guix to
+create an environment with tools needed to build the web interface.
+This repository comes with an environment definition file =guix.scm=,
+which you should load up with Guix:
 
 #+BEGIN_SRC sh
 guix environment --load=guix.scm
@@ -51,7 +67,10 @@ example configuration file.
 
 ** Installing RCAS web
 
-Alternatively, you can install RCAS web by running =make install= as root.
+To install RCAS web to the configured target directory just run =make
+install= as root.
+
+** Running RCAS web
 
 To start the application web server and the worker process(es) do this:
 
