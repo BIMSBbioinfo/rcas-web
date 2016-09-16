@@ -38,13 +38,15 @@
 
 (define permitted-report-options (map car valid-fields))
 
-(define (sanitize-report-options options)
-  "Leave only whitelisted pairs in the given OPTIONS."
+(define (sanitize-report-options options-string)
+  "Leave only whitelisted pairs in the given OPTIONS.  This procedure
+operates on a serialized OPTIONS string from the key value store.  The
+string is expected to be a valid S-expression."
   (filter (match-lambda
             ((key . value)
              (member key permitted-report-options)))
           ;; Convert options to an S-expression
-          (call-with-input-string options read)))
+          (call-with-input-string options-string read)))
 
 (define (report-form-options->options options-alist)
   "Leave only whitelisted pairs in the given form OPTIONS-ALIST.
