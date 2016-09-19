@@ -41,7 +41,7 @@
   "Collect all needed bits from the FORM-ALIST to build a <qqchunk>
 representing the uploaded chunk."
   (define (as-string bv)
-    (bytevector->string bv "ISO-8859-1"))
+    ((@@ (ice-9 iconv) bytevector->string) bv "ISO-8859-1"))
   (make-chunk
    (as-string (assoc-ref form-alist "qquuid"))
    (as-string (assoc-ref form-alist "qqfilename"))
