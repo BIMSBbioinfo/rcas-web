@@ -66,7 +66,7 @@ record object."
   "Split the bytevector PAYLOAD containing the request body at the
 given BOUNDARY string.  Return a list of bytevectors."
 
-  (define boundbv  (string->bytevector boundary (latin-1-codec)))
+  (define boundbv  ((@@ (ice-9 iconv) string->bytevector) boundary (latin-1-codec)))
   (define boundlen (bytevector-length boundbv))
 
   (let loop ((rest payload)
