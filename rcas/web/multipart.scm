@@ -47,7 +47,8 @@ record object."
     (make-part
      (call-with-input-string
          ;; TODO: bytestring-append?
-         (string-append (bytevector->string (bytevector-drop prefix 2) "ISO-8859-1")
+         (string-append ((@@ (ice-9 iconv) bytevector->string)
+                         (bytevector-drop prefix 2) "ISO-8859-1")
                         "\r\n\r\n")
        read-headers)
      ;; Drop last two bytes because every part body ends with "\r\n".
