@@ -52,7 +52,9 @@ nobase_dist_assets_DATA = \
   assets/fine-uploader/continue.gif								\
   assets/fine-uploader/fine-uploader-new.css					\
   assets/fine-uploader/retry.gif								\
-  assets/js/init-fine-uploader.js
+  assets/js/init-fine-uploader.js								\
+  assets/js/rcas.js												\
+  assets/webfonts/LinLibertine_R.woff
 
 SSOURCES =							\
   rcas/ui.scm						\
