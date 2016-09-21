@@ -79,11 +79,14 @@ output is redirected to log files."
     (if (and (file-exists? input)
              (access? input R_OK))
         (begin
-          (format #t "[~a] rcas-job started for ~a with ~a\n"
-                  (current-time) file-name options)
-          (runReport (fold cons (sanitize-report-options options)
-                           `((queryFilePath . ,input)
-                             (outDir        . ,outdir))))
+          (let ((options (sanitize-report-options options)))
+            (format #t "[~a] rcas-job started for ~a with ~a\n"
+                    (current-time) file-name options)
+            (runReport (fold cons options
+                             `((queryFilePath . ,input)
+                               (outDir        . ,outdir)
+                               (gffFilePath   . ,(genome->gtf-file
+                                                  (assoc-ref options 'genomeVersion)))))))
           (let ((result-file (string-append file-name ".RCAS.report.html")))
             (if (file-exists? (string-append outdir "/" result-file))
                 result-file

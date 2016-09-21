@@ -16,11 +16,13 @@
 ;;; <http://www.gnu.org/licenses/>.
 
 (define-module (rcas utils report)
+  #:use-module (rcas config)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
   #:use-module (ice-9 iconv)
   #:export (sanitize-report-options
+            genome->gtf-file
             report-form-options->options
             options-as-table))
 
@@ -67,6 +69,11 @@ directly to the rcas-job."
                                   ((boolean) (equal? strval "on"))
                                   (else      strval))))))))
               options-alist))
+
+(define (genome->gtf-file genome)
+  "Return path to GTF file for the given GENOME."
+  (and=> (assoc-ref %config 'gtf-files)
+         (cute assoc-ref <> (string->symbol genome))))
 
 (define (form-name->r-name name)
   "Convert option names from the HTML form to the option names as used

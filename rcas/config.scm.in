@@ -31,6 +31,10 @@
     (upload-dir  . "/srv/rcas-web/uploads")
     (results-dir . "/srv/rcas-web/results")
     (host        . "localhost")
-    (port        . 8080)))
+    (port        . 8080)
+    (gtf-files   . ((hg19 . ,(string-append (getcwd) "/gtf/hg19.gtf"))
+                    (mm9  . ,(string-append (getcwd) "/gtf/mm9.gtf"))
+                    (ce10 . ,(string-append (getcwd) "/gtf/ce10.gtf"))
+                    (dm3  . ,(string-append (getcwd) "/gtf/dm3.gtf"))))))
 
 (define %Rscript "@RSCRIPT@")
