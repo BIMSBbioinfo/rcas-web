@@ -55,20 +55,30 @@ string is expected to be a valid S-expression."
   "Leave only whitelisted pairs in the given form OPTIONS-ALIST.
 Convert matching pairs to an alist of Scheme values that can be passed
 directly to the rcas-job."
-  (filter-map (match-lambda
-                ((key . value)
-                 (let* ((newkey (and=> (form-name->r-name key)
-                                       string->symbol))
-                        (type   (assoc-ref valid-fields newkey)))
-                   (and type
-                        (let ((strval (bytevector->string value "ISO-8859-1")))
-                          (cons newkey
-                                (case type
-                                  ((string)  strval)
-                                  ((number)  (string->number strval))
-                                  ((boolean) (equal? strval "on"))
-                                  (else      strval))))))))
-              options-alist))
+  (let ((good-options
+         (filter-map (match-lambda
+                       ((key . value)
+                        (let* ((newkey (and=> (form-name->r-name key)
+                                              string->symbol))
+                               (type   (assoc-ref valid-fields newkey)))
+                          (and type
+                               (let ((strval (bytevector->string value "ISO-8859-1")))
+                                 (cons newkey
+                                       (case type
+                                         ((string)  strval)
+                                         ((number)  (string->number strval))
+                                         ((boolean) (equal? strval "on"))
+                                         (else      strval))))))))
+                     options-alist)))
+
+    ;; Ensure that boolean fields default to #f when they were not
+    ;; selected.
+    (fold (lambda (key options)
+            (if (assoc key options)
+                options
+                (cons (cons key #f) options)))
+          good-options
+          '(annotationSummary goAnalysis msigdbAnalysis motifAnalysis))))
 
 (define (genome->gtf-file genome)
   "Return path to GTF file for the given GENOME."
