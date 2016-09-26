@@ -16,8 +16,11 @@
 ;;; <http://www.gnu.org/licenses/>.
 
 (define-module (rcas config)
+  #:use-module (srfi srfi-26)
+  #:use-module (ice-9 match)
   #:export (%config
-            %Rscript))
+            %Rscript
+            validate-configuration))
 
 (define %config
   ;; Try to find the "assets" directory relative to the executable
@@ -36,5 +39,16 @@
                     (mm9  . ,(string-append (getcwd) "/gtf/mm9.gtf"))
                     (ce10 . ,(string-append (getcwd) "/gtf/ce10.gtf"))
                     (dm3  . ,(string-append (getcwd) "/gtf/dm3.gtf"))))))
+
+(define (validate-configuration config)
+  "Abort if any of the declared files in CONFIG don't exist."
+  (for-each (lambda (file)
+              (when (not (file-exists? file))
+                (error "File does not exist, check your configuration: " file)))
+            (append (map (cute assoc-ref config <>)
+                         '(assets-dir upload-dir results-dir))
+                    (map (match-lambda
+                           ((key . val) val))
+                         (assoc-ref config 'gtf-files)))))
 
 (define %Rscript "@RSCRIPT@")
