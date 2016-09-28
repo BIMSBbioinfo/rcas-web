@@ -23,7 +23,7 @@ Once that’s done you can easily create an environment in which all
 required external dependencies are available with this command:
 
 #+BEGIN_SRC sh
-guix environment --ad-hoc redis r-rcas
+guix environment --ad-hoc redis
 #+END_SRC
 
 The Guix BIMSB repository contains a package definition for
