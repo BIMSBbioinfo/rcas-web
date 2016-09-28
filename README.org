@@ -105,7 +105,11 @@ Here’s an example for a configuration file:
  (upload-dir  . "/path/to/file/uploads")
  (results-dir . "/where/to/store/reports")
  (host        . "localhost")
- (port        . 12345))
+ (port        . 12345)
+ (gtf-files   . ((hg19 . "/path/to/hg19.gtf")
+                 (mm9  . "/path/to/mm9.gtf")
+                 (ce10 . "/path/to/ce10.gtf")
+                 (dm3  . "/path/to/dm3.gtf"))))
 #+END_SRC
 
 Assuming that this is stored as a file called =rcas.conf= you can make
@@ -118,10 +122,11 @@ rcas-web --config=rcas.conf [command]
 An example configuration file =rcas.conf.example= is also created by
 the configure script.
 
-The only configuration keys that you will probably need to override
-are “upload-dir” (for the directory where RCAS web will store uploaded
-BED files) and “results-dir” where RCAS web will store generated
-reports.
+The only configuration keys that you will need to override are
+=upload-dir= (for the directory where RCAS web will store uploaded BED
+files), =results-dir= (where RCAS web will store generated reports),
+and the =gtf-files= paths.  The gtf files are not included with RCAS
+or rcas-web and must be obtained separately.
 
 The “port” key in the configuration file only overrides the *default*
 port on which the application web server will listen for HTTP
