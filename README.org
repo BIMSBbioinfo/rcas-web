@@ -72,6 +72,13 @@ install= as root.
 
 ** Running RCAS web
 
+First you need to start the redis server, which is used by =rcas-web=
+for the job queue.
+
+#+BEGIN_SRC sh
+redis-server &
+#+END_SRC
+
 To start the application web server and the worker process(es) do this:
 
 #+BEGIN_SRC sh
