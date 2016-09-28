@@ -70,25 +70,6 @@ example configuration file.
 To install RCAS web to the configured target directory just run =make
 install= as root.
 
-** Running RCAS web
-
-First you need to start the redis server, which is used by =rcas-web=
-for the job queue.
-
-#+BEGIN_SRC sh
-redis-server &
-#+END_SRC
-
-To start the application web server and the worker process(es) do this:
-
-#+BEGIN_SRC sh
-${prefix}/bin/rcas-web --config=rcas.conf server &
-${prefix}/bin/rcas-web --config=rcas.conf worker &
-#+END_SRC
-
-You can and should run a larger number of worker processes.
-Currently, one worker process runs exactly one job at a time.
-
 ** Configuring RCAS web
 
 RCAS web comes with crude defaults that you probably want to change.
@@ -128,15 +109,37 @@ files), =results-dir= (where RCAS web will store generated reports),
 and the =gtf-files= paths.  The gtf files are not included with RCAS
 or rcas-web and must be obtained separately.
 
-The “port” key in the configuration file only overrides the *default*
+The =port= key in the configuration file only overrides the *default*
 port on which the application web server will listen for HTTP
 requests.  Since you will probably want to start multiple web servers
-behind a reverse proxy like Nginx overriding the default is not very
+behind a reverse proxy like Nginx, overriding the default is not very
 useful.  Instead you should pass an additional numeric argument to the
-“server” sub-command to set the port.  The following shell command
-will start ten web server instances on the ports 3001 to 3010
-(inclusive), redirect all output to separate log files, and record the
-pid of each web server process:
+“server” sub-command to set the port.
+
+** Running RCAS web
+
+First you need to start the redis server, which is used by =rcas-web=
+for the job queue.
+
+#+BEGIN_SRC sh
+redis-server &
+#+END_SRC
+
+To start the application web server and a single worker process do this:
+
+#+BEGIN_SRC sh
+${prefix}/bin/rcas-web --config=rcas.conf server &
+${prefix}/bin/rcas-web --config=rcas.conf worker &
+#+END_SRC
+
+You can and should run a larger number of worker processes.
+Currently, one worker process runs exactly one job at a time.  You may
+also want to start more than one web server process and use a reverse
+proxy like Nginx to dispatch to them.
+
+The following shell command will start ten web server instances on the
+ports 3001 to 3010 (inclusive), redirect all output to separate log
+files, and record the pid of each web server process:
 
 #+BEGIN_SRC sh
 for port in $(seq 3001 3010); do
