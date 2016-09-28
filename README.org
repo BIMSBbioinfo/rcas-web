@@ -148,6 +148,9 @@ for port in $(seq 3001 3010); do
 done
 #+END_SRC
 
+You can find full documentation of a simple real-life deployment in
+the file [[deployment.org]].
+
 ** License
 
 The RCAS web interface is free software: you can redistribute it

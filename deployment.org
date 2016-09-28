@@ -1,0 +1,178 @@
+* Example deployment
+
+All packages for this deployment will be installed into a separate
+profile.  We will refer to the profile as =$GUIX_PROFILE=.
+
+#+BEGIN_SRC sh
+export GUIX_PROFILE=/var/guix/profiles/custom/rcas/.guix-profile
+#+END_SRC
+
+We will use Nginx as a reverse proxy that forwards requests to
+http://localhost:3000 to one of 20 rcas-web application servers.  For
+the job queue we will need a Redis server.
+
+** Installing software
+
+Let’s first install the software packages and the locale files for the
+glibc to avoid any locale warnings that usually arise when using Guix
+software on a GNU distribution other than GuixSD.
+
+#+BEGIN_SRC sh
+guix package -p $GUIX_PROFILE -i rcas-web nginx redis glibc-locales
+#+END_SRC
+
+Once Guix has finished installing things we can *activate* the profile:
+
+#+BEGIN_SRC sh
+bash
+source $GUIX_PROFILE/etc/profile
+#+END_SRC
+
+** Preparing directory structure
+
+Next, we’ll prepare a directory structure for Nginx configuration
+files, Nginx working directory, log and pid directories, GTF files
+used by RCAS, and directories for storing uploaded files and generated
+reports.
+
+#+BEGIN_SRC sh
+mkdir -p /srv/rcas-web/nginx/logs
+mkdir -p /srv/rcas-web/rcas/{gtf,uploads,reports,logs,pids}
+#+END_SRC
+
+** Nginx
+
+The goal in using Nginx is only to expose a single port and dispatch
+to one of a whole range of application web servers.
+
+The following configuration file suffices for our purposes.  Save it
+as =/srv/rcas-web/nginx/nginx.conf=.
+
+#+BEGIN_EXAMPLE
+worker_processes 5;
+error_log /dev/null emerg;
+pid /srv/rcas-web/nginx/nginx.pid;
+
+events {}
+
+http {
+  upstream rcas-web {
+    # Forward request to least connected application server.
+    least_conn;
+    server localhost:3001;
+    server localhost:3002;
+    server localhost:3003;
+    server localhost:3004;
+    server localhost:3005;
+    server localhost:3006;
+    server localhost:3007;
+    server localhost:3008;
+    server localhost:3009;
+    server localhost:3010;
+    server localhost:3011;
+    server localhost:3012;
+    server localhost:3013;
+    server localhost:3014;
+    server localhost:3015;
+    server localhost:3016;
+    server localhost:3017;
+    server localhost:3018;
+    server localhost:3019;
+    server localhost:3020;
+  }
+
+  error_log /dev/null emerg;
+  access_log /srv/rcas-web/nginx/logs/access.log;
+
+  # Forward all requests on port 3000 to one of the application servers.
+  server {
+    listen 3000;
+    location / {
+      proxy_pass http://rcas-web;
+    }
+  }
+}
+#+END_EXAMPLE
+
+Let’s start Nginx with this configuration file and set its working
+directory to =/srv/rcas-web/nginx=.
+
+#+BEGIN_SRC sh
+nginx -c /srv/rcas-web/nginx/nginx.conf -p /srv/rcas-web/nginx
+#+END_SRC
+
+** Redis
+
+Redis doesn’t need any configuration.  We only need to start it:
+
+#+BEGIN_SRC sh
+redis-server > /srv/rcas-web/redis.log &
+#+END_SRC
+
+** RCAS web
+
+RCAS needs GTF files for four genome assemblies (hg19, mm9, ce10, and
+dm3) in order to produce meaningful reports.  They can be downloaded
+from the [[http://www.ensembl.org][Ensembl database]].
+
+Here are direct links to the needed files:
+
+- [[ftp://ftp.ensembl.org/pub/release-75/gtf/homo_sapiens/Homo_sapiens.GRCh37.75.gtf.gz][hg19]]
+- [[ftp://ftp.ensembl.org/pub/release-67/gtf/mus_musculus/Mus_musculus.NCBIM37.67.gtf.gz][mm9]]
+- [[ftp://ftp.ensembl.org/pub/release-67/gtf/caenorhabditis_elegans/Caenorhabditis_elegans.WBcel215.67.gtf.gz][ce10]]
+- [[ftp://ftp.ensembl.org/pub/release-78/gtf/drosophila_melanogaster/Drosophila_melanogaster.BDGP5.78.gtf.gz][dm3]]
+
+Unpack them to =/srv/rcas-web/rcas/gtf= and rename them to “hg19.gtf”,
+“mm9.gtf”, “ce10.gtf”, and “dm3.gtf”, respectively.
+
+Next, we need to tell RCAS web where to find these files and the
+directories for uploaded BED files and generated reports.  Save the
+following configuration file as =/srv/rcas-web/rcas/rcas.conf=.
+
+#+BEGIN_EXAMPLE scheme
+((upload-dir  . "/srv/rcas-web/rcas/uploads")
+ (results-dir . "/srv/rcas-web/rcas/reports")
+ (gtf-files   . ((hg19 . "/srv/rcas-web/rcas/gtf/hg19.gtf")
+                 (mm9  . "/srv/rcas-web/rcas/gtf/mm9.gtf")
+                 (ce10 . "/srv/rcas-web/rcas/gtf/ce10.gtf")
+                 (dm3  . "/srv/rcas-web/rcas/gtf/dm3.gtf"))))
+#+END_EXAMPLE
+
+Now all that’s left is to start the application web servers and the
+background workers with a script like this:
+
+#+BEGIN_EXAMPLE sh
+#!/bin/bash
+
+# This script can be used on a computer where Guix is available, but
+# where GuixSD is not used.
+
+set -e
+set -u
+
+# This is needed to suppress locale warnings.  The "glibc-locales"
+# package should be installed to this profile.
+GUIX_PROFILE=/var/guix/profiles/custom/rcas/.guix-profile
+export GUIX_LOCPATH=${GUIX_PROFILE}/lib/locale
+
+# This must match the installation prefix.
+ROOT=/srv/rcas-web/rcas
+
+# Prepare directories
+mkdir -p ${ROOT}/logs
+mkdir -p ${ROOT}/pids
+
+# Spawn web processes
+for port in $(seq 3001 3020); do
+    rcas-web --config=${ROOT}/rcas.conf server ${port} \
+             > ${ROOT}/logs/rcas-web-${port}.log &
+    echo $! > ${ROOT}/pids/rcas-web-${port}.pid
+done
+
+# Spawn background workers
+for id in $(seq 20); do
+    rcas-web --config=${ROOT}/rcas.conf worker \
+             > ${ROOT}/logs/rcas-web-worker-${id}.log &
+    echo $! > ${ROOT}/pids/rcas-web-worker-${id}.pid
+done
+#+END_EXAMPLE
