@@ -102,50 +102,22 @@ features.")
     (home-page "https://github.com/BIMSBbioinfo/RCAS")
     (license license:expat)))
 
-(define-public rcas
-  (let ((commit "bb4a7987ae7da0a18b256e79d31fc0a12db86989")
-        (revision "1"))
-    (package
-      (name "rcas")
-      (version (string-append "0.0.0-" revision "." (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/BIMSBbioinfo/RCAS-tools.git")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "13wc2zv2wl5cggv8ip103zmwlcqx2gjgv0ab18wlrswvvn3ixvl4"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'autoconf
-             (lambda _
-               (zero? (system* "autoreconf" "-vif")))))))
-      (inputs
-       `(("r" ,r)
-         ("r-rcas" ,r-rcas)
-         ("r-dt" ,r-dt)
-         ("r-plotly" ,r-plotly)
-         ("r-doparallel" ,r-doparallel)))
-      (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)))
-      (synopsis "Pipeline wrapper for RNA-centric annotation system")
-      (description
-       "RCAS aims to be a standalone RNA-centric annotation system that
-provides intuitive reports and publication-ready graphics.")
-      (home-page "https://github.com/BIMSBbioinfo/RCAS-tools")
-      (license license:expat))))
-
 (define-public rcas-web
-  (package (inherit rcas)
+  (package
     (name "rcas-web")
     (version "0.0.0")
+    (source #f)
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'autoconf
+           (lambda _
+             (zero? (system* "autoreconf" "-vif")))))))
     (inputs
-     `(("guile-next" ,guile-next)
+     `(("r" ,r)
+       ("r-rcas" ,r-rcas)
+       ("guile-next" ,guile-next)
        ("guile-json" ,guile2.2-json)
        ("guile-redis" ,guile2.2-redis)))
     (native-inputs
@@ -153,6 +125,10 @@ provides intuitive reports and publication-ready graphics.")
        ("automake" ,automake)
        ("pkg-config" ,pkg-config)))
     (synopsis "Web interface for RNA-centric annotation system (RCAS)")
+    (description
+     "RCAS aims to be a standalone RNA-centric annotation system that
+provides intuitive reports and publication-ready graphics.")
+    (home-page "https://github.com/BIMSBbioinfo/rcas-web")
     (license license:agpl3+)))
 
 rcas-web
