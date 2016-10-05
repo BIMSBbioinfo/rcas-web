@@ -64,7 +64,9 @@ output is redirected to log files."
                    (type . "output"))
              (sink (file . Rerr)
                    (type . "message"))
-             (library "RCAS")
+             (message "loading RCAS...")
+             (suppressMessages (library "RCAS"))
+             (message "running RCAS...")
              (RCAS::runReport ,@options))))))
 
 (define (rcas-job raw-file-name options)
