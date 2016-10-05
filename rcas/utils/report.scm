@@ -66,7 +66,7 @@ directly to the rcas-job."
                                  (cons newkey
                                        (case type
                                          ((string)  strval)
-                                         ((number)  (string->number strval))
+                                         ((number)  (or (string->number strval) 0))
                                          ((boolean) (equal? strval "on"))
                                          (else      strval))))))))
                      options-alist)))
