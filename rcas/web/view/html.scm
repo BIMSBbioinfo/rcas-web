@@ -197,8 +197,21 @@ publications or other academic usage."))
                                      (id   "motif-analysis")
                                      (name "motif-analysis")))
                            "Run motif analysis"))))
-           ;; TODO: Add sampling text field (this may break RCAS if the
-           ;; number is larger than the number of records)
+           (div (@ (class "form-group"))
+                (p "For very large input BED files it may make sense
+to downsample the data.  If a positive integer value is provided, the
+number of intervals in the input BED file will be randomly downsampled
+to include intervals up to the specified number.  The input will be
+downsampled only if this value is larger than zero and less than the
+total number of input intervals.")
+                (label (@ (class "col-md-2 control-label"))
+                       "Intervals")
+                (div (@ (class "col-md-6"))
+                     (div (@ (class "checkbox"))
+                          (input (@ (type "text")
+                                    (id   "sample-n")
+                                    (name "sample-n")
+                                    (placeholder "intervals"))))))
            (button (@ (type "submit")
                       (class "btn btn-lg btn-primary btn-block"))
                    "Run RCAS")))
