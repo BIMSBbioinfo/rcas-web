@@ -110,12 +110,17 @@ in R, i.e. to from hyphenated lowercase to camelCase."
           (cons "Run motif analysis"
                 (if value "yes" "no")))
          (('genomeVersion . genome)
-          (cons "Genome version" genome)))
+          (cons "Genome version" genome))
+         (('sampleN . value)
+          (if (zero? value) #f
+              (cons "Downsampled intervals"
+                    (format #f "~:d" value)))))
        (call-with-input-string options read)))
 
 (define (options-as-table options-string)
   `(table ,@(map (match-lambda
                    ((label . value)
                     `(tr (th ,label)
-                         (td ,value))))
+                         (td ,value)))
+                   (_ ""))
                  (prettify-options options-string))))
