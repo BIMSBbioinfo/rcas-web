@@ -201,17 +201,17 @@ publications or other academic usage."))
                                      (name "motif-analysis")
                                      (checked "true")))
                            "Run motif analysis"))))
-           (div (@ (class "form-group"))
-                (p "For very large input BED files it may make sense
-to downsample the data.  If a positive integer value is provided, the
+           (p "For very large input BED files it may make sense to
+downsample the data.  If a positive integer value is provided, the
 number of intervals in the input BED file will be randomly downsampled
 to include intervals up to the specified number.  The input will be
 downsampled only if this value is larger than zero and less than the
 total number of input intervals.")
+           (div (@ (class "form-group row"))
                 (label (@ (class "col-md-2 control-label"))
                        "Intervals")
                 (div (@ (class "col-md-6"))
-                     (div (@ (class "checkbox"))
+                     (div (@ (class "form-group"))
                           (input (@ (type "text")
                                     (id   "sample-n")
                                     (name "sample-n")
