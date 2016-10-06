@@ -105,7 +105,7 @@ features.")
 (define-public rcas-web
   (package
     (name "rcas-web")
-    (version "0.0.0")
+    (version "0.0.1")
     (source #f)
     (build-system gnu-build-system)
     (arguments
