@@ -30,6 +30,7 @@
   #:use-module (rcas web util)
   #:export (render-static-asset
             render-report
+            render-report-asset
             render-html
             render-json
             not-found
@@ -46,19 +47,20 @@
     ("ttf"  . (application/octet-stream))
     ("html" . (text/html))))
 
-;; TODO: merge with render-static-asset
 (define (render-report id)
-  (let ((file-name (string-join (list (assoc-ref %config 'results-dir) id
-                                      (string-append id ".RCAS.report.html")) "/")))
-    (if (and (file-exists? file-name)
-             (not (directory? file-name)))
-        (list `((content-type . ,(assoc-ref file-mime-types
-                                            (file-extension file-name))))
-              (call-with-input-file file-name get-bytevector-all))
-        (not-found (build-uri 'http
-                              #:host (assoc-ref %config 'host)
-                              #:port (assoc-ref %config 'port)
-                              #:path (string-join id "/" 'prefix))))))
+  (render-report-asset id
+                       (list (string-append id ".RCAS.report.html"))))
+
+(define (render-report-asset id asset-path)
+  ;; Allow only lowercase letters, numbers, and dashes in report
+  ;; identifiers.
+  (let* ((valid-chars (char-set-adjoin (char-set-union char-set:lower-case
+                                                       char-set:digit)
+                                       #\-))
+         (clean-id (string-filter valid-chars id)))
+    (render-static-file (string-append (assoc-ref %config 'results-dir)
+                                       "/" clean-id)
+                        asset-path)))
 
 (define (render-static-asset path)
   (render-static-file (assoc-ref %config 'assets-dir) path))
