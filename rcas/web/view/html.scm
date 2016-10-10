@@ -140,12 +140,10 @@
 regions located by methods such as Clip-Seq.  RCAS automatically
 provides dynamic annotations for custom input files that contain
 transcriptomic target regions.")
-           (p "Provided with target regions in BED format, RCAS
-automatically summarizes annotated features that overlap with targets,
-and performs enrichment analysis of motifs, Gene Ontology (GO) terms
-and gene set.  The final report of RCAS consists of high-quality
-dynamic figures and tables, which are readily applicable for
-publications or other academic usage."))
+           (p "Visit "
+              (a (@ (href "http://bioconductor.org/packages/3.4/bioc/html/RCAS.html"))
+                 "the RCAS Bioconductor page")
+              " for additional documentation."))
           (form (@ (id "qq-form")
                    (class "row"))
            (div (@ (class "form-group row"))
