@@ -18,7 +18,8 @@
 (define-module (rcas web view html)
   #:export (index
             result-page
-            invalid-result))
+            invalid-result
+            cannot-download-report))
 
 (define* (layout #:key (head '()) (body '()))
   `((doctype "html")
@@ -234,11 +235,13 @@ transcriptomic target regions.")
           (h2 "Details")
           (p (strong "Status: ")
              ,(format #f "~a (since ~a)" status ago))
-          ,(if (string-prefix? "success" status)
-               `(p (a (@ (href ,(string-append "/result/"
+          ,@(when (string-prefix? "success" status)
+              `((p (a (@ (href ,(string-append "/result/"
                                                id "/report")))
-                      "Access the RCAS report here."))
-               '())
+                      "View the RCAS report here."))
+                (p (a (@ (href ,(string-append "/result/"
+                                               id "/download")))
+                      "Download the RCAS report here."))))
           ,options
           ,@(when output
               `((h2 "Output")
@@ -266,5 +269,17 @@ transcriptomic target regions.")
      (div (@ (class "container"))
           (p "The result id does not exist.  Results are only kept for
 a limited amount of time.")
+          (p (a (@ (href "/"))
+                "How about running RCAS on another file?"))))))
+
+(define (cannot-download-report id)
+  (layout
+   #:body
+   `(,(jumbotron
+       `(p "The report for "
+           (strong ,id)
+           " cannot be downloaded."))
+     (div (@ (class "container"))
+          (p "There was an error creating the report archive.")
           (p (a (@ (href "/"))
                 "How about running RCAS on another file?"))))))

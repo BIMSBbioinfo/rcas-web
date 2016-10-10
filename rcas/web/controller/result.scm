@@ -17,13 +17,15 @@
 
 (define-module (rcas web controller result)
   #:use-module (srfi srfi-11)
+  #:use-module (ice-9 binary-ports)
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
   #:use-module (rcas config)
   #:use-module (rcas utils jobs)
   #:use-module (rcas utils report)
   #:use-module (rcas web view html)
-  #:export (result-handler))
+  #:export (result-handler
+            pack-and-send-report))
 
 (define (split-status status)
   (match-let* (((status time) (string-split status #\:))
@@ -77,3 +79,25 @@
            (result-page id status ago options errors output result #f))
           ((failed)
            (result-page id status ago options errors output result #f))))))))
+
+(define (pack-and-send-report id)
+  "Tar up the report directory for the report with the given ID and
+send it."
+  (let ((status (get-status id)))
+    (cond
+     ((null? status) #f)
+     (else
+      (let* ((dir (string-append (assoc-ref %config 'results-dir) "/" id))
+             (archive (string-append (or (getenv "TMPDIR") "/tmp")
+                                     "/" id ".tar.gz")))
+        (if (and (file-exists? dir)
+                 (zero? (system* "tar" "-C" dir "-czf" archive ".")))
+            (let ((response
+                   (list
+                    `((content-type . (application/gzip))
+                      (content-disposition . (attachment
+                                              (filename . ,(basename archive)))))
+                    (call-with-input-file archive get-bytevector-all))))
+              (delete-file archive)
+              response)
+            #f))))))
