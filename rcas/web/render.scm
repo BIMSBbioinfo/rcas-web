@@ -19,6 +19,8 @@
 ;; This code was snarfed from David Thompson's guix-web.
 
 (define-module (rcas web render)
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module (ice-9 binary-ports)
   #:use-module (web response)
   #:use-module (web uri)
@@ -59,9 +61,13 @@
                               #:path (string-join id "/" 'prefix))))))
 
 (define (render-static-asset path)
-  (let ((file-name (string-join (cons* (assoc-ref %config 'assets-dir)
-                                       path) "/")))
-    (if (and (file-exists? file-name)
+  (render-static-file (assoc-ref %config 'assets-dir) path))
+
+(define (render-static-file root path)
+  ;; PATH is a list of path components
+  (let ((file-name (string-join (cons* root path) "/")))
+    (if (and (not (any (cut string-contains <> "..") path))
+             (file-exists? file-name)
              (not (directory? file-name)))
         (list `((content-type . ,(assoc-ref file-mime-types
                                             (file-extension file-name))))
