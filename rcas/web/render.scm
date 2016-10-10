@@ -41,6 +41,7 @@
     ("png" . (image/png))
     ("gif" . (image/gif))
     ("woff" . (application/font-woff))
+    ("ttf"  . (application/octet-stream))
     ("html" . (text/html))))
 
 ;; TODO: merge with render-static-asset
