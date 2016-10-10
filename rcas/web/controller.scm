@@ -34,5 +34,7 @@
     (render-html (result-handler id)))
    ((GET "result" id "report")
     (render-report id))
+   ((GET "result" id path ...)
+    (render-report-asset id path))
    ((GET path ...)
     (render-static-asset path))))

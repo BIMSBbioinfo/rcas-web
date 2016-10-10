@@ -85,7 +85,8 @@ output is redirected to log files."
             (format #t "[~a] rcas-job started for ~a with ~a\n"
                     (current-time) file-name options)
             (runReport (fold cons options
-                             `((queryFilePath . ,input)
+                             `((self_contained . #f)
+                               (queryFilePath . ,input)
                                (outDir        . ,outdir)
                                (gffFilePath   . ,(genome->gtf-file
                                                   (assoc-ref options 'genomeVersion)))))))
