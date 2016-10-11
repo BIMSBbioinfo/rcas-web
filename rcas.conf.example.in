@@ -6,4 +6,6 @@
  (gtf-files   . ((hg19 . "/path/to/hg19.gtf")
                  (mm9  . "/path/to/mm9.gtf")
                  (ce10 . "/path/to/ce10.gtf")
-                 (dm3  . "/path/to/dm3.gtf"))))
+                 (dm3  . "/path/to/dm3.gtf")))
+ (msigdb      . ((c2.cp "Canonical pathways"
+                         "/path/to/msigdb/c2.cp.v5.0.entrez.gmt"))))

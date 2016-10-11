@@ -26,7 +26,8 @@
             sanitize-report-options
             genome->gtf-file
             report-form-options->options
-            options-as-table))
+            options-as-table
+            msigdb-options))
 
 (define valid-fields
   '(;;queryFilePath <-- always ignore!
@@ -95,11 +96,17 @@ output is redirected to log files."
   "Leave only whitelisted pairs in the given OPTIONS.  This procedure
 operates on a serialized OPTIONS string from the key value store.  The
 string is expected to be a valid S-expression."
-  (filter (match-lambda
-            ((key . value)
-             (member key permitted-report-options)))
-          ;; Convert options to an S-expression
-          (call-with-input-string options-string read)))
+  (let ((clean (filter (match-lambda
+                         ((key . value)
+                          (member key permitted-report-options)))
+                       ;; Convert options to an S-expression
+                       (call-with-input-string options-string read))))
+    ;; Replace msigdb key with path to file.
+    (let ((msigdb (assoc-ref options 'msigdbFilePath)))
+      (if msigdb
+          (cons `(msigdbFilePath . ,(msigdb->msigdb-file msigdb))
+                (assoc-remove! clean 'msigdbFilePath))
+          clean))))
 
 (define (report-form-options->options options-alist)
   "Leave only whitelisted pairs in the given form OPTIONS-ALIST.
@@ -133,7 +140,30 @@ directly to the rcas-job."
 (define (genome->gtf-file genome)
   "Return path to GTF file for the given GENOME."
   (and=> (assoc-ref %config 'gtf-files)
-         (cute assoc-ref <> (string->symbol genome))))
+         (cut assoc-ref <> (string->symbol genome))))
+
+(define (msigdb->msigdb-file key)
+  "Return path to msigdb file for the given KEY."
+  (and=> (assoc-ref %config 'msigdb)
+         (lambda (msigdb)
+           (and=> (assoc-ref msigdb (string->symbol key)) cadr))))
+
+(define (msigdb->label key)
+  "Return label for the given msigdb KEY."
+  (and=> (assoc-ref %config 'msigdb)
+         (lambda (msigdb)
+           (and=> (assoc-ref msigdb (string->symbol key)) car))))
+
+(define (msigdb-options)
+  "Extract labels and keys for all available msigdb files, if
+available, and present them as a list of option tags."
+  (and=> (assoc-ref %config 'msigdb)
+         (lambda (msigdb)
+           (map (match-lambda
+                  ((key label file)
+                   `(option (@ (value ,key))
+                            ,label)))
+                msigdb))))
 
 (define (form-name->r-name name)
   "Convert option names from the HTML form to the option names as used
@@ -161,6 +191,8 @@ in R, i.e. to from hyphenated lowercase to camelCase."
                 (if value "yes" "no")))
          (('genomeVersion . genome)
           (cons "Genome version" genome))
+         (('msigdbFilePath . msigdb)
+          (cons "Gene set" (msigdb->label msigdb)))
          (('sampleN . value)
           (if (zero? value) #f
               (cons "Downsampled intervals"

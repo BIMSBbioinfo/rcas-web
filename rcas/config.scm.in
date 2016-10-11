@@ -49,6 +49,9 @@
                          '(assets-dir upload-dir results-dir))
                     (map (match-lambda
                            ((key . val) val))
-                         (assoc-ref config 'gtf-files)))))
+                         (assoc-ref config 'gtf-files))
+                    (map (match-lambda
+                           ((key label val) val))
+                         (assoc-ref config 'msigdb)))))
 
 (define %Rscript "@RSCRIPT@")

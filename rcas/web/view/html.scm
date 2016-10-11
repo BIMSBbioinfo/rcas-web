@@ -16,6 +16,7 @@
 ;;; <http://www.gnu.org/licenses/>.
 
 (define-module (rcas web view html)
+  #:use-module (rcas utils report) ; for msigdb-options
   #:export (index
             result-page
             invalid-result
@@ -168,6 +169,18 @@ transcriptomic target regions.")
                                "Worm (ce10)")
                        (option (@ (value "dm3"))
                                "Fly (dm3)"))))
+           ,(let ((msigdb (msigdb-options)))
+              (if msigdb
+                  `(div (@ (class "form-group row"))
+                        (label (@ (class "col-md-2 control-label")
+                                  (for "genome-version"))
+                               "Select gene set")
+                        (div (@ (class "col-md-6"))
+                             (select (@ (id "msigdb-file-path")
+                                        (name "msigdb-file-path")
+                                        (class "form-control"))
+                               ,@msigdb)))
+                  '()))
            (div (@ (class "form-group row"))
                 (label (@ (class "col-md-2 control-label"))
                        "Analysis modules")
