@@ -125,6 +125,19 @@ Here are direct links to the needed files:
 Unpack them to =/srv/rcas-web/rcas/gtf= and rename them to “hg19.gtf”,
 “mm9.gtf”, “ce10.gtf”, and “dm3.gtf”, respectively.
 
+This can be achieved with this shell snippet:
+
+#+BEGIN_SRC sh
+cd gtf
+wget -O hg19.gtf.gz ftp://ftp.ensembl.org/pub/release-75/gtf/homo_sapiens/Homo_sapiens.GRCh37.75.gtf.gz
+wget -O mm9.gtf.gz  ftp://ftp.ensembl.org/pub/release-67/gtf/mus_musculus/Mus_musculus.NCBIM37.67.gtf.gz
+wget -O ce10.gtf.gz ftp://ftp.ensembl.org/pub/release-67/gtf/caenorhabditis_elegans/Caenorhabditis_elegans.WBcel215.67.gtf.gz
+wget -O dm3.gtf.gz  ftp://ftp.ensembl.org/pub/release-78/gtf/drosophila_melanogaster/Drosophila_melanogaster.BDGP5.78.gtf.gz
+
+gunzip *.gtf.gz
+cd -
+#+END_SRC
+
 Next, we need to tell RCAS web where to find these files and the
 directories for uploaded BED files and generated reports.  Save the
 following configuration file as =/srv/rcas-web/rcas/rcas.conf=.
