@@ -40,11 +40,12 @@
             (runReport
              (append
               ;; Predetermined options
-              `((selfContained . #f)
-                (queryFilePath . ,input)
-                (outDir        . ,outdir)
-                (gffFilePath   . ,(genome->gtf-file
-                                   (assoc-ref options 'genomeVersion))))
+              `((selfContained        . #f)
+                (printProcessedTables . #t)
+                (queryFilePath        . ,input)
+                (outDir               . ,outdir)
+                (gffFilePath          . ,(genome->gtf-file
+                                          (assoc-ref options 'genomeVersion))))
               ;; Sanitized options
               options)))
           (let ((result-file (string-append file-name ".RCAS.report.html")))
