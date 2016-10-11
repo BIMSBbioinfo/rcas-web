@@ -233,7 +233,8 @@ transcriptomic target regions.")
       (@ (type "text/javascript")
          (src "js/init-fine-uploader.js"))))))
 
-(define (result-page id status ago options errors output result refresh?)
+(define* (result-page id status ago options errors output result refresh?
+                      #:optional (progress 0))
   (layout
    #:head
    (if refresh?
@@ -255,6 +256,18 @@ transcriptomic target regions.")
                   (p (a (@ (href ,(string-append "/result/"
                                                  id "/download")))
                         "Download the RCAS report here.")))
+                '())
+          ,@(if (string-prefix? "processing" status)
+                `((div (@ (class "progress"))
+                       (div (@ (class "progress-bar progress-bar-success progress-bar-striped active")
+                               (role "progressbar")
+                               (aria-valuenow progress)
+                               (aria-valuemin "0")
+                               (aria-valuemax "100")
+                               (style ,(string-append
+                                        "min-width: 2em; width: "
+                                        progress "%")))
+                            ,(string-append progress "%"))))
                 '())
           ,options
           ,@(when output

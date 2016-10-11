@@ -17,8 +17,10 @@
 
 (define-module (rcas web controller result)
   #:use-module (srfi srfi-11)
+  #:use-module (srfi srfi-26)
   #:use-module (ice-9 binary-ports)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 regex)
   #:use-module (ice-9 rdelim)
   #:use-module (rcas config)
   #:use-module (rcas utils jobs)
@@ -74,7 +76,17 @@
           ((waiting)
            (result-page id status ago options errors output #f #t))
           ((processing)
-           (result-page id status ago options errors output #f #t))
+           (result-page id status ago options errors output #f #t
+                        ;; FIXME: parse log to find the progress of
+                        ;; report generation.  This is really a hack
+                        ;; and it might fail, because we cannot
+                        ;; guarantee that the little snippet we have
+                        ;; from the log contains a match.
+                        (or (and (car output)
+                                 (and=> (string-match ".*\\| +([0-9]+)%"
+                                                      (car output))
+                                        (cut match:substring <> 1)))
+                            "0")))
           ((success)
            (result-page id status ago options errors output result #f))
           ((failed)
