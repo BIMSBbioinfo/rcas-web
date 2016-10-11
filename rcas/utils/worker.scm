@@ -20,7 +20,6 @@
   #:use-module (rcas utils report)
   #:use-module (rcas utils jobs)
   #:use-module (ice-9 match)
-  #:use-module (srfi srfi-1)
   #:export (worker-loop))
 
 (define (rcas-job raw-file-name options)
@@ -38,12 +37,16 @@
           (let ((options (sanitize-report-options options)))
             (format #t "[~a] rcas-job started for ~a with ~a\n"
                     (current-time) file-name options)
-            (runReport (fold cons options
-                             `((selfContained . #f)
-                               (queryFilePath . ,input)
-                               (outDir        . ,outdir)
-                               (gffFilePath   . ,(genome->gtf-file
-                                                  (assoc-ref options 'genomeVersion)))))))
+            (runReport
+             (append
+              ;; Predetermined options
+              `((selfContained . #f)
+                (queryFilePath . ,input)
+                (outDir        . ,outdir)
+                (gffFilePath   . ,(genome->gtf-file
+                                   (assoc-ref options 'genomeVersion))))
+              ;; Sanitized options
+              options)))
           (let ((result-file (string-append file-name ".RCAS.report.html")))
             (if (file-exists? (string-append outdir "/" result-file))
                 result-file
