@@ -96,17 +96,17 @@ output is redirected to log files."
   "Leave only whitelisted pairs in the given OPTIONS.  This procedure
 operates on a serialized OPTIONS string from the key value store.  The
 string is expected to be a valid S-expression."
-  (let ((clean (filter (match-lambda
+  (let* ((clean (filter (match-lambda
                          ((key . value)
                           (member key permitted-report-options)))
-                       ;; Convert options to an S-expression
-                       (call-with-input-string options-string read))))
+                        ;; Convert options to an S-expression
+                        (call-with-input-string options-string read)))
+         (msigdb (assoc-ref clean 'msigdbFilePath)))
     ;; Replace msigdb key with path to file.
-    (let ((msigdb (assoc-ref options 'msigdbFilePath)))
-      (if msigdb
-          (cons `(msigdbFilePath . ,(msigdb->msigdb-file msigdb))
-                (assoc-remove! clean 'msigdbFilePath))
-          clean))))
+    (if msigdb
+        (cons `(msigdbFilePath . ,(msigdb->msigdb-file msigdb))
+              (assoc-remove! clean 'msigdbFilePath))
+        clean)))
 
 (define (report-form-options->options options-alist)
   "Leave only whitelisted pairs in the given form OPTIONS-ALIST.
