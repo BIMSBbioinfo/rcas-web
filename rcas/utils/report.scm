@@ -31,15 +31,18 @@
 (define valid-fields
   '(;;queryFilePath <-- always ignore!
     ;;outDir        <-- always ignore!
-    ;;(gffFilePath          . string)
-    ;;(msigdbFilePath       . string)
-    (annotationSummary    . boolean)
-    (goAnalysis           . boolean)
-    (msigdbAnalysis       . boolean)
-    (motifAnalysis        . boolean)
-    (genomeVersion        . string)
-    ;;(printProcessedTables . boolean)
-    (sampleN              . number)))
+    ;;gffFilePath   <-- automatically assigned (dependent on genome)
+    ;;printProcessedTables <-- always true
+    (annotationSummary . boolean)
+    (goAnalysis        . boolean)
+    (msigdbAnalysis    . boolean)
+    (motifAnalysis     . boolean)
+    (genomeVersion     . string)
+    (sampleN           . number)
+
+    ;; We only store the msigdb key, which is resolved to a path at
+    ;; job execution time.
+    (msigdbFilePath    . string)))
 
 ;; Snarfed from the sources of (guix build utils)
 (define (mkdir-p dir)
