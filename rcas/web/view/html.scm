@@ -235,13 +235,14 @@ transcriptomic target regions.")
           (h2 "Details")
           (p (strong "Status: ")
              ,(format #f "~a (since ~a)" status ago))
-          ,@(when (string-prefix? "success" status)
-              `((p (a (@ (href ,(string-append "/result/"
-                                               id "/report")))
-                      "View the RCAS report here."))
-                (p (a (@ (href ,(string-append "/result/"
-                                               id "/download")))
-                      "Download the RCAS report here."))))
+          ,@(if (string-prefix? "success" status)
+                `((p (a (@ (href ,(string-append "/result/"
+                                                 id "/report")))
+                        "View the RCAS report here."))
+                  (p (a (@ (href ,(string-append "/result/"
+                                                 id "/download")))
+                        "Download the RCAS report here.")))
+                '())
           ,options
           ,@(when output
               `((h2 "Output")
