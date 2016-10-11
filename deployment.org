@@ -138,6 +138,13 @@ gunzip *.gtf.gz
 cd -
 #+END_SRC
 
+RCAS can use gene sets from the [[http://software.broadinstitute.org/gsea/msigdb/collections.jsp][Molecular SignaturesDatabase (MSigDB)]].
+Since it is not clear whether collections may be redistributed
+legally, we opted not to package them with RCAS.  To use gene sets,
+dump them in a directory and add a record for each gene set to the
+configuration file.  Each record is a list with an internally used key
+followed by a label and the path to the file.
+
 Next, we need to tell RCAS web where to find these files and the
 directories for uploaded BED files and generated reports.  Save the
 following configuration file as =/srv/rcas-web/rcas/rcas.conf=.
@@ -148,7 +155,9 @@ following configuration file as =/srv/rcas-web/rcas/rcas.conf=.
  (gtf-files   . ((hg19 . "/srv/rcas-web/rcas/gtf/hg19.gtf")
                  (mm9  . "/srv/rcas-web/rcas/gtf/mm9.gtf")
                  (ce10 . "/srv/rcas-web/rcas/gtf/ce10.gtf")
-                 (dm3  . "/srv/rcas-web/rcas/gtf/dm3.gtf"))))
+                 (dm3  . "/srv/rcas-web/rcas/gtf/dm3.gtf")))
+ (msigdb      . ((c2.cp "Canonical pathways"
+                        "/srv/rcas-web/rcas/msigdb/c2.cp.v5.0.entrez.gmt"))))
 #+END_EXAMPLE
 
 Now all that’s left is to start the application web servers and the
