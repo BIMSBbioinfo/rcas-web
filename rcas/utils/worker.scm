@@ -19,55 +19,9 @@
   #:use-module (rcas config)
   #:use-module (rcas utils report)
   #:use-module (rcas utils jobs)
-  #:use-module (rcas utils r)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:export (worker-loop))
-
-;; Snarfed from the sources of (guix build utils)
-(define (mkdir-p dir)
-  "Create directory DIR and all its ancestors."
-  (define absolute?
-    (string-prefix? "/" dir))
-
-  (define not-slash
-    (char-set-complement (char-set #\/)))
-
-  (let loop ((components (string-tokenize dir not-slash))
-             (root       (if absolute?
-                             ""
-                             ".")))
-    (match components
-      ((head tail ...)
-       (let ((path (string-append root "/" head)))
-         (catch 'system-error
-           (lambda ()
-             (mkdir path)
-             (loop tail path))
-           (lambda args
-             (if (= EEXIST (system-error-errno args))
-                 (loop tail path)
-                 (apply throw args))))))
-      (() #t))))
-
-(define (runReport options)
-  "Generate a RCAS report according to the provided OPTIONS.  All
-output is redirected to log files."
-  (let ((out (assoc-ref options 'outDir)))
-    (mkdir-p out)
-    (runR (scheme->R
-           `((set! Rout (file (description . ,(string-append out "/Rout.log"))
-                              (open . "wt")))
-             (set! Rerr (file (description . ,(string-append out "/Rerr.log"))
-                              (open . "wt")))
-             (sink (file . Rout)
-                   (type . "output"))
-             (sink (file . Rerr)
-                   (type . "message"))
-             (message "loading RCAS...")
-             (suppressMessages (library "RCAS"))
-             (message "running RCAS...")
-             (RCAS::runReport ,@options))))))
 
 (define (rcas-job raw-file-name options)
   ;; Make sure the RAW-FILE-NAME exists, is readable, and is a regular
