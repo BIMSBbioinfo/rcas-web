@@ -123,7 +123,7 @@
                     (small "RNA Centric Annotation System")))
              ,body)))
 
-(define index
+(define (index)
   (layout
    #:head
    `(;; The "Fine Uploader" library 5.11.5 taken from here:

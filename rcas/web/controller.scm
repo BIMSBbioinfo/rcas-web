@@ -27,7 +27,7 @@
 (define (controller request body)
   (match-lambda
    ((GET)
-    (render-html index))
+    (render-html (index)))
    ((POST "uploads" ...)
     (render-json (upload-handler request body)))
    ((GET "result" id)
