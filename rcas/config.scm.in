@@ -50,8 +50,8 @@
                     (map (match-lambda
                            ((key . val) val))
                          (assoc-ref config 'gtf-files))
-                    (map (match-lambda
-                           ((key label val) val))
-                         (assoc-ref config 'msigdb)))))
+                    (match (assoc-ref config 'msigdb)
+                      ((key label val) (list val))
+                      (_ '())))))
 
 (define %Rscript "@RSCRIPT@")
