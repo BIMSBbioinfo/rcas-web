@@ -44,7 +44,9 @@
   "Abort if any of the declared files in CONFIG don't exist."
   (for-each (lambda (file)
               (when (not (file-exists? file))
-                (error "File does not exist, check your configuration: " file)))
+                (format (current-error-port)
+                        "File does not exist, check your configuration: ~a\n" file)
+                (exit 1)))
             (append (map (cute assoc-ref config <>)
                          '(assets-dir upload-dir results-dir))
                     (map (match-lambda
