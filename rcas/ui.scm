@@ -48,7 +48,6 @@
 
 (define (run-rcas-web . args)
   (let ((args (maybe-override-config! args)))
-    (validate-configuration %config)
     (match args
         (()
          (format (current-error-port)
@@ -57,8 +56,10 @@
       ((or ("-h") ("--help") ("help"))
        (show-rcas-web-usage))
       (("worker")
+       (validate-configuration %config)
        (worker-loop))
       (("server" port ...)
+       (validate-configuration %config)
        (let ((port (match port
                      (()  (assoc-ref %config 'port))
                      ((p) (string->number p)))))
