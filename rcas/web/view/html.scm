@@ -258,7 +258,7 @@ transcriptomic target regions.")
                            (onclick
                             ,(string-append "RCAS.galaxySend(this, '"
                                             id "')")))
-                        "View the RCAS report here."))
+                        "Send report to Galaxy"))
                   (p (@ (class "galaxy-hide"))
                      (a (@ (href ,(string-append "/result/"
                                                  id "/report")))
