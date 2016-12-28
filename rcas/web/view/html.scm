@@ -238,8 +238,8 @@ transcriptomic target regions.")
   (layout
    #:head
    (if refresh?
-       `((meta (@ (http-equiv "refresh")
-                  (content ,(string-append "30; URL=/result/" id)))))
+       `(script (@ (type "text/javascript"))
+                "refresh = window.setTimeout(function(){window.location.href=window.location.href},30000);")
        '())
    #:body
    `(,(jumbotron
