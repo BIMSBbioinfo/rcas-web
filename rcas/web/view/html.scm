@@ -237,12 +237,13 @@ transcriptomic target regions.")
                       #:optional (progress 0))
   (layout
    #:head
-   (if refresh?
-       `(script (@ (type "text/javascript"))
-                "refresh = window.setTimeout(function(){window.location.href=window.location.href},30000);")
-       '())
-   (script (@ (type "text/javascript"))
-           "window.onload = RCAS.galaxyInit();")
+   `((script (@ (type "text/javascript"))
+             "window.onload = RCAS.galaxyInit;")
+     ,@(if refresh?
+           `((script (@ (type "text/javascript"))
+                      "refresh = window.setTimeout(function(){window.location.href=window.location.href},30000);"))
+           '()))
+
    #:body
    `(,(jumbotron
        `(p "Results page for file "
