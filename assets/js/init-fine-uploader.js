@@ -11,7 +11,9 @@ var uploader = new qq.FineUploader({
   callbacks: {
     onComplete: function(id, name, responseJSON, xhr) {
       if (responseJSON['success']) {
-        window.location = "/result/"+responseJSON['result'];
+        window.location = "/result/"+responseJSON['result'] +
+          // pass GALAXY_URL along (if exists)
+          window.location.search;
       }
     }
   }

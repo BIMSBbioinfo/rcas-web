@@ -241,6 +241,8 @@ transcriptomic target regions.")
        `(script (@ (type "text/javascript"))
                 "refresh = window.setTimeout(function(){window.location.href=window.location.href},30000);")
        '())
+   (script (@ (type "text/javascript"))
+           "window.onload = RCAS.galaxyInit();")
    #:body
    `(,(jumbotron
        `(p "Results page for file "
@@ -250,10 +252,19 @@ transcriptomic target regions.")
           (p (strong "Status: ")
              ,(format #f "~a (since ~a)" status ago))
           ,@(if (string-prefix? "success" status)
-                `((p (a (@ (href ,(string-append "/result/"
+                `((p (@ (class "galaxy"))
+                     (a (@ (class "btn btn-primary")
+                           (href "#")
+                           (onclick
+                            ,(string-append "RCAS.galaxySend(this, '"
+                                            id "')")))
+                        "View the RCAS report here."))
+                  (p (@ (class "galaxy-hide"))
+                     (a (@ (href ,(string-append "/result/"
                                                  id "/report")))
                         "View the RCAS report here."))
-                  (p (a (@ (href ,(string-append "/result/"
+                  (p (@ (class "galaxy-hide"))
+                     (a (@ (href ,(string-append "/result/"
                                                  id "/download")))
                         "Download the RCAS report here.")))
                 '())

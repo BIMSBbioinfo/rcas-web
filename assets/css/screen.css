@@ -79,3 +79,7 @@ td {
     padding-left: 1em;
     font-style: italic;
 }
+
+.galaxy {
+    display: none;
+}
