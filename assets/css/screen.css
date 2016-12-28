@@ -83,3 +83,9 @@ td {
 .galaxy {
     display: none;
 }
+
+footer {
+    font-size: 10px;
+    margin-top: 3rem;
+    padding: 1em;
+}

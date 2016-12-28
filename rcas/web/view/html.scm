@@ -115,6 +115,26 @@
                                  (class "qq-ok-button-selector"))
                               "Okay"))))))
 
+(define footer
+  `(footer
+    (p "RCAS was developed by "
+       (a (@ (href "http://bioinformatics.mdc-berlin.de/team.html#bora-uyar-phd"))
+          "Bora Uyar")
+       ", "
+       (a (@ (href "http://bioinformatics.mdc-berlin.de/team.html#dilmurat-yusuf-phd"))
+          "Dilmurat Yusuf")
+       ", "
+       (a (@ (href "http://bioinformatics.mdc-berlin.de/team.html#ricardo-wurmus"))
+          "Ricardo Wurmus")
+       ", and "
+       (a (@ (href "http://bioinformatics.mdc-berlin.de/team.html#altuna-akalin-phd"))
+          "Altuna Akalin")
+       ".")
+    (p "In case of technical issues with this web interface "
+       (a (@ (href "mailto:ricardo.wurmus@mdc-berlin.de"))
+          "please contact Ricardo Wurmus")
+       ".")))
+
 (define* (jumbotron #:optional (body '()))
   `(div (@ (class "jumbotron"))
         (div (@ (class "container"))
@@ -225,6 +245,7 @@ transcriptomic target regions.")
            (button (@ (type "submit")
                       (class "btn btn-lg btn-primary btn-block"))
                    "Run RCAS")))
+     ,footer
      (script
       (@ (type "text/javascript")
          (src "fine-uploader/fine-uploader.js")))
@@ -297,7 +318,8 @@ transcriptomic target regions.")
           ,(if refresh?
                '(p "This page will try to refresh in 30 seconds.")
                '(p (a (@ (href "/"))
-                      "How about running RCAS on another file?")))))))
+                      "How about running RCAS on another file?"))))
+     ,footer)))
 
 (define (invalid-result id)
   (layout
