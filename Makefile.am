@@ -1,9 +1,9 @@
 # rcas-web - Web interface for RCAS
-# Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
+# Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
 #
 # This file is part of rcas-web.
 #
-# rcas-web is free software; see LICENSE file for details.
+# rcas-web is free software; see COPYING file for details.
 
 SCMGOBJECTS = $(filter %.scm, $(SSOURCES))
 SOURCES     = $(SCMGOBJECTS)
@@ -31,6 +31,9 @@ SUFFIXES = .scm .go
 
 bin_SCRIPTS =						\
   scripts/rcas-web
+
+dist_pkgdata_DATA =					\
+  etc/service.sh
 
 moddir = $(prefix)/share/guile/site/$(GUILE_EFFECTIVE_VERSION)
 godir  = $(moddir)
