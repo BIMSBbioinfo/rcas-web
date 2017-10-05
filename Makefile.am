@@ -42,6 +42,8 @@ assetsdir = $(datadir)/@PACKAGE@
 nobase_dist_assets_DATA = \
   assets/css/reset.css											\
   assets/css/screen.css											\
+  assets/css/bootstrap.css										\
+  assets/css/bootstrap-theme.css								\
   assets/fine-uploader/loading.gif								\
   assets/fine-uploader/placeholders/not_available-generic.png	\
   assets/fine-uploader/placeholders/waiting-generic.png			\
