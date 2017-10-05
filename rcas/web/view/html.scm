@@ -264,6 +264,12 @@ transcriptomic target regions.")
    `(,(jumbotron)
      (div (@ (class "container"))
           (h2 "JavaScript license information")
+          (p "All JavaScript code used by RCAS is free software.  The
+following table lists all scripts and their respective licenses.")
+          (p "For more information on JavaScript and free software see "
+             (a (@ (href "https://www.gnu.org/philosophy/javascript-trap.html"))
+                "The JavaScript Trap")
+             ".")
           (table (@ (id "jslicense-labels1"))
                  (tr (td (a (@ (href "js/init-fine-uploader.js"))
                             "init-fine-uploader.js"))
