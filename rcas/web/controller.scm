@@ -39,5 +39,7 @@
         (render-html (cannot-download-report id))))
    ((GET "result" id path ...)
     (render-report-asset id path))
+   ((GET "javascript")
+    (render-html (javascript-license-information)))
    ((GET path ...)
     (render-static-asset path))))

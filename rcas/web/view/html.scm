@@ -20,7 +20,8 @@
   #:export (index
             result-page
             invalid-result
-            cannot-download-report))
+            cannot-download-report
+            javascript-license-information))
 
 (define* (layout #:key (head '()) (body '()))
   `((doctype "html")
@@ -133,7 +134,10 @@
     (p "In case of technical issues with this web interface "
        (a (@ (href "mailto:ricardo.wurmus@mdc-berlin.de"))
           "please contact Ricardo Wurmus")
-       ".")))
+       ".")
+    (p (a (@ (href "/javascript")
+             (data-jslicense "1"))
+          "JavaScript license information"))))
 
 (define* (jumbotron #:optional (body '()))
   `(div (@ (class "jumbotron"))
@@ -253,6 +257,27 @@ transcriptomic target regions.")
      (script
       (@ (type "text/javascript")
          (src "js/init-fine-uploader.js"))))))
+
+(define (javascript-license-information)
+  (layout
+   #:body
+   `(,(jumbotron)
+     (div (@ (class "container"))
+          (h2 "JavaScript license information")
+          (table (@ (id "jslicense-labels1"))
+                 (tr (td (a (@ (href "js/init-fine-uploader.js"))
+                            "init-fine-uploader.js"))
+                     (td (a (@ (href "https://gnu.org/licenses/agpl-3.0.html"))
+                            "GNU-AGPL-3.0-or-later")))
+                 (tr (td (a (@ (href "js/rcas.js"))
+                            "rcas.js"))
+                     (td (a (@ (href "https://gnu.org/licenses/agpl-3.0.html"))
+                            "GNU-AGPL-3.0-or-later")))
+                 (tr (td (a (@ (href "fine-uploader/fine-uploader.js"))
+                            "fine-uploader.js"))
+                     (td (a (@ (href "http://www.jclark.com/xml/copying.txt"))
+                            "Expat")))))
+     ,footer)))
 
 (define* (result-page id status ago options errors output result refresh?
                       #:optional (progress 0))
