@@ -33,6 +33,28 @@ AS_IF([test -z "$RSCRIPT"],
       [AC_PATH_PROG([RSCRIPT], [Rscript])],
       [AC_MSG_NOTICE([Using $RSCRIPT as Rscript executable.])])
 
+dnl Ensure that the given R package is avaliable.  Optionally, check
+dnl the version number.
+AC_DEFUN([AX_TEST_R_PACKAGE], [
+    pushdef([PKG],$1)
+    pushdef([VERSION],$2)
+    AC_MSG_CHECKING([for R package PKG VERSION])
+
+    if test -z "$VERSION"
+    then
+      TEST=$( R --silent --vanilla -e 'if(is.na(packageDescription("PKG"))) stop("not found")' 2>/dev/null )
+    else
+      TEST=$( R --silent --vanilla -e 'if(!(packageDescription("PKG")$Version >= "VERSION")) stop("not found")' 2>/dev/null )
+    fi
+    AS_IF([test $? != 0],
+      [AC_MSG_ERROR([R package PKG VERSION could not be found])],
+      [AC_MSG_RESULT([OK])])
+    popdef([PKG])
+    popdef([VERSION])
+])
+
+AX_TEST_R_PACKAGE([RCAS], [1.3.4])
+
 guilemoduledir="${datarootdir}/guile/site/${GUILE_EFFECTIVE_VERSION}"
 AC_SUBST([guilemoduledir])
 AC_SUBST([GUILE_EFFECTIVE_VERSION])
