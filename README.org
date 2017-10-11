@@ -85,7 +85,8 @@ Here’s an example for a configuration file:
  (gtf-files   . ((hg19 . "/path/to/hg19.gtf")
                  (mm9  . "/path/to/mm9.gtf")
                  (ce10 . "/path/to/ce10.gtf")
-                 (dm3  . "/path/to/dm3.gtf"))))
+                 (dm3  . "/path/to/dm3.gtf")))
+ (msigdb      . ((c2.cp.v5.0 "MSigDB Curated Pathways (c2.cp.v5.0)" "/srv/rcas-web/msigdb/c2.cp.v5.0.entrez.gmt"))))
 #+END_SRC
 
 Assuming that this is stored as a file called =rcas.conf= you can make
