@@ -145,7 +145,7 @@ done
 #+END_SRC
 
 You can find full documentation of a simple real-life deployment in
-the file [[deployment.org]].
+the file [[deployment.org]].  We also provide an example service script at =etc/service.sh=
 
 ** License
 
