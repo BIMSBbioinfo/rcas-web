@@ -1,5 +1,5 @@
 ;;; rcas-web - Web interface for RCAS
-;;; Copyright © 2016  Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017  Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2014  David Thompson <davet@gnu.org>
 ;;;
 ;;; This program is free software: you can redistribute it and/or
