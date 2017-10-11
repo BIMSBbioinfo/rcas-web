@@ -167,7 +167,7 @@ regions located by methods such as Clip-Seq.  RCAS automatically
 provides dynamic annotations for custom input files that contain
 transcriptomic target regions.")
            (p "Visit "
-              (a (@ (href "http://bioconductor.org/packages/3.4/bioc/html/RCAS.html"))
+              (a (@ (href "http://bioconductor.org/packages/release/bioc/html/RCAS.html"))
                  "the RCAS Bioconductor page")
               " for additional documentation."))
           (form (@ (id "qq-form")
