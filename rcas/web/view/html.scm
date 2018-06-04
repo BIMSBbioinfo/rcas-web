@@ -137,7 +137,16 @@
        ".")
     (p (a (@ (href "/javascript")
              (data-jslicense "1"))
-          "JavaScript license information"))))
+          "JavaScript license information"))
+    (p "This site is covered by the"
+       (a (@ (href "https://www.mdc-berlin.de/de/datenschutzerklaerungen"))
+          "MDC Data Privacy policy")
+       ".")
+    (p "Files that you upload to this server are only used by RCAS to
+provide this service.  Uploaded files and generated RCAS artefacts are
+removed from our servers automatically within a few weeks after
+processing.  The webserver stores IP addresses to monitor usage of
+this service.  The IP logs are anonymized.")))
 
 (define* (jumbotron #:optional (body '()))
   `(div (@ (class "jumbotron"))
