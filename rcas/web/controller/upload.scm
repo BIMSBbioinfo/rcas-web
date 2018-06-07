@@ -1,5 +1,5 @@
 ;;; rcas-web - Web interface for RCAS
-;;; Copyright © 2016, 2017  Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This program is free software: you can redistribute it and/or
 ;;; modify it under the terms of the GNU Affero General Public License
@@ -20,7 +20,6 @@
   #:use-module (ice-9 iconv)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
-  #:use-module (json)
   #:use-module (rnrs io ports)
   #:use-module (web request)
   #:use-module (rcas web multipart)
@@ -67,27 +66,22 @@ Returns a JSON status message that is understood by the Fine Uploader
 JavaScript library."
   (let ((size (request-content-length request)))
     (if (> size %max-upload-size)
-        (json
-         (object
-          ("error"
+        `(("error" .
            ,(format #f "The file is too large!  File size must be less than ~a MiB."
-                    (/ %max-upload-size 1024 1024)))))
+                    (/ %max-upload-size 1024 1024))))
         (let* ((parts (parse-request-body request body))
                (form-alist (form-parts->alist parts)))
           (catch #t
             (lambda ()
               (let ((id (save-uploaded-file form-alist)))
                 (enqueue id (report-form-options->options form-alist))
-                (json
-                 (object
-                  ("success" "true")
-                  ("result" ,id)))))
+                `(("success" . "true")
+                  ("result"  . ,id))))
             (lambda (key . rest)
-              (json
-               (object
-                ("error" ,(with-output-to-string
-                            (lambda ()
-                              (format #t "~a: ~a" key rest))))))))))))
+              `(("error" .
+                 ,(with-output-to-string
+                    (lambda ()
+                      (format #t "~a: ~a" key rest)))))))))))
 
 (define (save-uploaded-file form-alist)
   "Process the FORM-ALIST of the multipart request to write the
