@@ -138,7 +138,7 @@
     (p (a (@ (href "/javascript")
              (data-jslicense "1"))
           "JavaScript license information"))
-    (p "This site is covered by the"
+    (p "This site is covered by the "
        (a (@ (href "https://www.mdc-berlin.de/de/datenschutzerklaerungen"))
           "MDC Data Privacy policy")
        ".")
