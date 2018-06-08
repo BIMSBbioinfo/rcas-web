@@ -22,6 +22,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
   #:use-module (ice-9 iconv)
+  #:use-module (ice-9 format)
   #:export (runReport
             sanitize-report-options
             genome->gtf-file
