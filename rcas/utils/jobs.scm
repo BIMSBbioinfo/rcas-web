@@ -1,5 +1,5 @@
 ;;; rcas-web - Web interface for RCAS
-;;; Copyright © 2016, 2017  Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This program is free software: you can redistribute it and/or
 ;;; modify it under the terms of the GNU Affero General Public License
@@ -58,30 +58,30 @@
 (define (make-getter field)
   (lambda (file-name)
     (car (with-redis
-          (get (string-append %prefix field ":" file-name))))))
+          (get (list (string-append %prefix field ":" file-name)))))))
 
 (define get-status  (make-getter "status"))
 (define get-options (make-getter "options"))
 (define get-result  (make-getter "result"))
 
 (define (set-status! file-name status)
-  (set (string-append %prefix "status:" file-name)
-       (string-append status ":"
-                      (number->string (current-time)))))
+  (set (list (string-append %prefix "status:" file-name)
+             (string-append status ":"
+                            (number->string (current-time))))))
 
 (define (set-options! file-name options)
-  (set (string-append %prefix "options:" file-name)
-       (format #f "~s" options)))
+  (set (list (string-append %prefix "options:" file-name)
+             (format #f "~s" options))))
 
 (define (set-result! file-name result)
-  (set (string-append %prefix "result:" file-name)
-       (format #f "~a" result)))
+  (set (list (string-append %prefix "result:" file-name)
+             (format #f "~a" result))))
 
 (define (next-file)
   "Wait for a file name to appear on the waiting list, then move it to
 the processing list and return the name."
   (basename
-   (car (with-redis (brpoplpush %waiting %processing 0)))))
+   (car (with-redis (brpoplpush (list %waiting %processing 0))))))
 
 (define (enqueue raw-file-name options)
   "Append the basename of RAW-FILE-NAME to the waiting queue and store
@@ -89,7 +89,7 @@ the OPTIONS."
   (let ((file-name (basename raw-file-name)))
     (with-redis
      (transaction
-      (rpush %waiting (list file-name))
+      (rpush (list %waiting (list file-name)))
       (set-status! file-name "waiting")
       (set-options! file-name options)))))
 
@@ -119,13 +119,13 @@ the job status and result are updated."
             (set-status! file-name "success")
             (set-status! file-name "failed"))
         ;; We're done processing this.
-        (lrem %processing 0 file-name))))
+        (lrem (list %processing 0 file-name)))))
     file-name))
 
 (define (processing-num)
   "Return number of jobs in the processing queue."
-  (car (with-redis (llen %processing))))
+  (car (with-redis (llen (list %processing)))))
 
 (define (waiting-num)
   "Return number of jobs waiting for processing."
-  (car (with-redis (llen %waiting))))
+  (car (with-redis (llen (list %waiting)))))
