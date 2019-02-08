@@ -1,6 +1,6 @@
 dnl -*- Autoconf -*-
 
-AC_INIT([rcas-web], [0.0.4])
+AC_INIT([rcas-web], [0.1.0])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([gnu color-tests -Wall -Wno-portability foreign])
 AM_SILENT_RULES([yes])

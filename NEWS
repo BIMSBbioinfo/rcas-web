@@ -1,0 +1,5 @@
+-*- org -*-
+
+* Changes in 0.1.0
+
+- upgraded to guile-redis 1.3.0 from 0.1.0
