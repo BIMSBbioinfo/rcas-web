@@ -89,7 +89,7 @@ the OPTIONS."
   (let ((file-name (basename raw-file-name)))
     (with-redis
      (transaction
-      (rpush (list %waiting (list file-name)))
+      (rpush (list %waiting file-name))
       (set-status! file-name "waiting")
       (set-options! file-name options)))))
 
