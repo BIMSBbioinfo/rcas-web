@@ -23,6 +23,14 @@ fi
 GUILE_MODULE_REQUIRED([json])
 GUILE_MODULE_REQUIRED([redis])
 
+dnl xgroup was added in the 1.3.0 release.
+AC_ARG_VAR(HAVE_RECENT_GUILE_REDIS)
+GUILE_MODULE_CHECK([HAVE_RECENT_GUILE_REDIS], [(redis commands)], [(defined? 'xgroup)], [has recent Guile Redis bindings])
+
+if test "x$HAVE_RECENT_GUILE_REDIS" = "xno"; then
+   AC_MSG_ERROR([please check that Guile Redis 1.3.0 or later is available.])
+fi
+
 
 dnl Check for required programmes and store their full path in the
 dnl given variables.  The variables are used to substitute
