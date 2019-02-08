@@ -20,11 +20,9 @@ if test "x$GUILD" = "x"; then
    AC_MSG_ERROR(['guild' binary not found; please check your guile-2.x installation.])
 fi
 
-GUILE_MODULE_AVAILABLE([have_guile_json], [(json)])
-AM_CONDITIONAL([HAVE_GUILE_JSON], [test "x$have_guile_json" = "xyes"])
+GUILE_MODULE_REQUIRED([json])
+GUILE_MODULE_REQUIRED([redis])
 
-GUILE_MODULE_AVAILABLE([have_guile_redis], [(redis)])
-AM_CONDITIONAL([HAVE_GUILE_REDIS], [test "x$have_guile_redis" = "xyes"])
 
 dnl Check for required programmes and store their full path in the
 dnl given variables.  The variables are used to substitute
