@@ -13,11 +13,11 @@ dnl Make sure they are available.
 m4_pattern_forbid([PKG_CHECK_MODULES])
 m4_pattern_forbid([GUILE_MODULE_AVAILABLE])
 
-PKG_CHECK_MODULES([GUILE], [guile-2.2 >= 2.1.3])
+PKG_CHECK_MODULES([GUILE], [guile-3.0])
 AC_PATH_PROG([GUILE], [guile])
 AC_PATH_PROG([GUILD], [guild])
 if test "x$GUILD" = "x"; then
-   AC_MSG_ERROR(['guild' binary not found; please check your guile-2.x installation.])
+   AC_MSG_ERROR(['guild' binary not found; please check your guile-3.x installation.])
 fi
 
 GUILE_MODULE_REQUIRED([json])
