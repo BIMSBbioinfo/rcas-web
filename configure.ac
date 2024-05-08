@@ -24,8 +24,9 @@ GUILE_MODULE_REQUIRED([json])
 GUILE_MODULE_REQUIRED([redis])
 
 dnl xgroup was added in the 1.3.0 release.
+dnl Later versions define the subcommand xgroup-create.
 AC_ARG_VAR(HAVE_RECENT_GUILE_REDIS)
-GUILE_MODULE_CHECK([HAVE_RECENT_GUILE_REDIS], [(redis commands)], [(defined? 'xgroup)], [has recent Guile Redis bindings])
+GUILE_MODULE_CHECK([HAVE_RECENT_GUILE_REDIS], [(redis commands)], [(defined? 'xgroup-create)], [has recent Guile Redis bindings])
 
 if test "x$HAVE_RECENT_GUILE_REDIS" = "xno"; then
    AC_MSG_ERROR([please check that Guile Redis 1.3.0 or later is available.])
@@ -59,7 +60,7 @@ AC_DEFUN([AX_TEST_R_PACKAGE], [
     popdef([VERSION])
 ])
 
-AX_TEST_R_PACKAGE([RCAS], [1.3.4])
+AX_TEST_R_PACKAGE([RCAS])
 
 guilemoduledir="${datarootdir}/guile/site/${GUILE_EFFECTIVE_VERSION}"
 AC_SUBST([guilemoduledir])
