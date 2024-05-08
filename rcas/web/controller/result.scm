@@ -63,7 +63,7 @@
         #f)))
 
 (define (result-handler id)
-  (let ((status (get-status id)) )
+  (let ((status (get-status id)))
     (cond
      ((null? status)
       (invalid-result id))
